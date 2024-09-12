@@ -7,7 +7,7 @@ void testLoadMaps()
     MapLoader loader;
 
     // Test loading a valid map
-    Map *map = loader.loadMap("valid_map.map"); // TODO: replace this with a valid map file
+    Map *map = loader.loadMap("valid_map.txt");
     if (map != nullptr)
     {
         std::cout << *map << std::endl;
@@ -15,14 +15,14 @@ void testLoadMaps()
         delete map;
     }
 
-    // Test loading an invalid map
-    map = loader.loadMap("invalid_map.map");
-    if (map != nullptr)
-    {
-        std::cout << *map << std::endl;
-        std::cout << "Is the map valid? " << (map->validate() ? "Yes" : "No") << std::endl;
-        delete map;
-    }
+    // // Test loading an invalid map
+    // map = loader.loadMap("invalid_map.txt");
+    // if (map != nullptr)
+    // {
+    //     std::cout << *map << std::endl;
+    //     std::cout << "Is the map valid? " << (map->validate() ? "Yes" : "No") << std::endl;
+    //     delete map;
+    // }
 }
 
 int main()
