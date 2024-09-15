@@ -43,6 +43,18 @@ Territory::~Territory()
     delete armies; // Free memory allocated for the number of armies
 }
 
+// Getter for territory name
+std::string Territory::getName() const
+{
+    return *this->name;
+}
+
+// Getter for territory's continent name
+std::string Territory::getContinentName() const
+{
+    return *this->continentName;
+}
+
 // Getter and setter for player ownership
 void Territory::setOwner(Player *p)
 {
