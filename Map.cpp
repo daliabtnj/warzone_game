@@ -82,6 +82,7 @@ void Territory::addAdjacentTerritory(Territory *t)
     adjacentTerritories->push_back(t);
 }
 
+
 std::vector<Territory *> Territory::getAdjacents() const
 {
     return *adjacentTerritories;
@@ -96,16 +97,18 @@ std::ostream &operator<<(std::ostream &os, const Territory &t)
 }
 
 // Continent class implementation
-Continent::Continent(std::string name)
+Continent::Continent(std::string name, int bonus)
 {
     this->name = new std::string(name);
     this->territories = new std::vector<Territory *>();
+    this->bonus = bonus;
 }
 
 Continent::Continent(const Continent &other)
 {
     this->name = new std::string(*other.name);
     this->territories = new std::vector<Territory *>(*other.territories);
+    this->bonus = other.bonus;
 }
 
 Continent &Continent::operator=(const Continent &other)
@@ -114,6 +117,7 @@ Continent &Continent::operator=(const Continent &other)
     {
         *this->name = *other.name;
         *this->territories = *other.territories;
+        this->bonus = other.bonus; 
     }
     return *this;
 }
@@ -128,6 +132,12 @@ std::string Continent::getName() const
 {
     return *name;
 }
+//getter for bonuses
+int Continent::getBonus() const
+{
+    return bonus; 
+}
+
 
 void Continent::addTerritory(Territory *t)
 {
@@ -254,6 +264,34 @@ bool Map::areContinentsConnected()
 std::ostream &operator<<(std::ostream &os, const Map &m)
 {
     os << "Map with " << m.territories->size() << " territories and "
-       << m.continents->size() << " continents.";
+       << m.continents->size() << " continents." << std::endl;
+
+    os << "Territories and their adjacent territories:" << std::endl;
+
+    for (auto territory : *m.territories) {
+    // Find the correct continent for this territory
+    for (auto continent : *m.continents) {
+        if (continent->getName() == territory->getContinentName()) {
+            os << "Territory: " << territory->getName()
+               << ", Continent: " << territory->getContinentName()
+               << ", Points: " << continent->getBonus() << std::endl;
+            break;  
+            //once correct continent is foudn, break out of the loop
+        }
+    }
+
+    // Print adjacent territories
+    os << "Adjacent territories: ";
+    std::vector<Territory *> adjacents = territory->getAdjacents();
+    if (adjacents.empty()) {
+        os << "None ";
+    } else {
+        for (auto adjacent : adjacents) {
+            os << "\n" << adjacent->getName();
+        }
+    }
+    os << "\n" << std::endl;
+}
+
     return os;
 }
