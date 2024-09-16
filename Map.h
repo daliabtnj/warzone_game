@@ -26,7 +26,6 @@ public:
     // Setters
     void setOwner(Player *p);
     void setArmies(int armies);
-    
 
     // Adds an adjacent territory to the current territory
     void addAdjacentTerritory(Territory *t);
@@ -50,7 +49,7 @@ private:
 class Continent
 {
 public:
-    Continent(std::string name, int bonus);                  // Constructor
+    Continent(std::string name, int bonus);       // Constructor
     Continent(const Continent &other);            // Copy constructor
     Continent &operator=(const Continent &other); // Assignment operator
     ~Continent();                                 // Destructor
@@ -63,7 +62,7 @@ public:
     void addTerritory(Territory *t); // Adds territory to continent
 
 private:
-    std::string *name;                     // Continent name
+    std::string *name; // Continent name
     int bonus;
     std::vector<Territory *> *territories; // List of territories in continent
 };

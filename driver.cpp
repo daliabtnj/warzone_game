@@ -7,7 +7,7 @@ void testLoadMaps()
     MapLoader loader;
 
     // Test loading a valid map
-    Map *map = loader.loadMap("valid_map2.txt");
+    Map *map = loader.loadMap("valid_map.txt");
     if (map != nullptr)
     {
         std::cout << *map << std::endl;
