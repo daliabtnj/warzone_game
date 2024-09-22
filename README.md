@@ -13,6 +13,7 @@ Team members:
 | Ayman Bohsali       | 40231988   | AymBohs        |
 | Aymane Arfaoui      | 40248780   | Aymane-Arfaoui |
 | Mathew Sakellarakos | 40248474   | ms8074         |
+| Alexander El Ghaoui | 40200062   | Ghawi25         |
 
 ## Running the code
 
