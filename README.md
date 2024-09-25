@@ -27,12 +27,12 @@ g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp driver.cpp
 
 This will generate a warzone executable file.
 
-2. Then, depending on your OS:
+2. Then, depending on your OS:git
 
 - Windows run:
 
 ```
-warzone.exe
+./warzone
 ```
 
 - macOS run:
@@ -54,7 +54,7 @@ This will generate a warzone executable file.
 - Windows run:
 
 ```
-warzone.exe
+./warzone
 ```
 
 - macOS run:

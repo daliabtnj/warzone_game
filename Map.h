@@ -33,6 +33,8 @@ public:
     // Returns the list of adjacent territories
     std::vector<Territory *> getAdjacents() const;
 
+    bool operator==(const Territory &other) const;
+
     // Overloaded stream insertion operator for printing a Territory
     friend std::ostream &operator<<(std::ostream &os, const Territory &t);
 

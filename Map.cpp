@@ -95,6 +95,11 @@ std::ostream &operator<<(std::ostream &os, const Territory &t)
     return os;
 }
 
+bool Territory::operator==(const Territory &other) const
+{
+    return this->getName() == other.getName(); // Compare based on the territory's name (or another unique identifier)
+}
+
 // Continent class implementation
 Continent::Continent(std::string name, int bonus)
 {
