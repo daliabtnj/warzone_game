@@ -38,9 +38,12 @@ warzone.exe
 - macOS run:
 
 ```
-./warzone.exe
+./warzone
 ```
 
+## running player
+g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp Player.cpp PlayerDriver.cpp
+=======
 ### Player
 
 1. From terminal, go to the project root directory and type cmd:
@@ -62,3 +65,4 @@ warzone.exe
 ```
 ./warzone.exe
 ```
+
