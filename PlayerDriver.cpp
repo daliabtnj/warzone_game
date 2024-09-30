@@ -31,10 +31,33 @@ void testPlayers() {
 
     // test issue order
     std::cout << "\nWe will test the method to issue orders\n";
-    player1.issueOrder();
-    player1.issueOrder();
+    player1.issueOrder(new DeployOrder());      // Issue a Deploy order
+    player1.issueOrder(new AdvanceOrder());     // Issue an Advance order
+    player1.issueOrder(new BombOrder());        // Issue a Bomb order
+    player1.issueOrder(new BlockadeOrder());
+    player1.issueOrder(new AirliftOrder());
+    player1.issueOrder(new NegotiateOrder());
     std::cout << "\n";
 
+    // testing hand functionalities
+/*
+  // creating cards
+    Card card1 = Card(Card::BOMB);
+    Card card2 = Card(Card::REINFORCEMENT);
+    Card card3 = Card(Card::AIRLIFT);
+
+    // 
+    Card allCards[3] = {card1, card2, card3};
+    Deck testDeck(allCards);
+    Hand playerHand;
+
+    // Draw 2 cards from the deck and add them to the hand
+    for(int i = 0; i < 2; i++)
+    {
+        testDeck.draw(playerHand);
+    }
+*/
+  
     // Output player status
     std::cout << player1 << std::endl;  // Print player information using overloaded << operator
     std::cout << player2 << std::endl;  
@@ -51,7 +74,7 @@ int main() {
 /*
 
 Compile code : 
-g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp Player.cpp PlayerDriver.cpp
+g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp Player.cpp PlayerDriver.cpp Order.cpp Cards.cpp
 
 Run code: 
 ./warzone

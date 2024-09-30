@@ -19,7 +19,7 @@ Player::Player()
 
     // allocate memory to new vectors that will hold pointers to objetcs
     territories = new std::vector<Territory *>();
-    handOfCards = new std::vector<Card *>();
+    handOfCards = new Hand();
     orders = new std::vector<Order *>();
 }
 
@@ -30,7 +30,7 @@ Player::Player(const std::string &playerName)
     playerCount++;     // Increment player count
     name = playerName; // Assign the provided name
     territories = new std::vector<Territory *>();
-    handOfCards = new std::vector<Card *>();
+    handOfCards = new Hand();
     orders = new std::vector<Order *>();
 }
 
@@ -39,7 +39,7 @@ Player::Player(const Player &other)
 {
     name = other.name; // Copy name
     territories = new std::vector<Territory *>(*(other.territories));
-    handOfCards = new std::vector<Card *>(*(other.handOfCards));
+    handOfCards = new Hand(*(other.handOfCards));
     orders = new std::vector<Order *>(*(other.orders));
 }
 
@@ -59,7 +59,7 @@ Player &Player::operator=(const Player &other)
 
         // Create new copies of the territories, handOfCards, and orders lists
         territories = new std::vector<Territory *>(*(other.territories));
-        handOfCards = new std::vector<Card *>(*(other.handOfCards));
+        handOfCards = new Hand(*(other.handOfCards));
         orders = new std::vector<Order *>(*(other.orders));
     }
     return *this; // Return a reference to the current object to allow chained assignments
@@ -90,10 +90,12 @@ std::vector<Territory *> Player::getTerritories() const
     return *territories;
 }
 
-std::vector<Card *> Player::getHandOfCards() const
+// error on this line "getHandOfCards" underlined
+Hand* Player::getHandOfCards() const
 {
-    return *handOfCards;
+    return handOfCards;
 }
+
 
 std::vector<Order *> Player::getOrders() const
 {
@@ -129,6 +131,18 @@ void Player::removeTerritory(Territory *territory)
     }
 }
 
+// TODO Method to add a card to hand of player
+// TODO method to display player's hand
+/*
+write a unction that adds cards to this hand of cards according to the hand of cards 
+regulation form Cards.cpp . then we output that the player has a hand of cards, or we
+display which cards the player has. in the test driver, we create cards, we add them to 
+the hand of the specific player then we have an output string that we have to create in 
+player.cpp that will say whats in the hand of cards, or we use the Overloaded output 
+operator from the Hand class
+*/
+
+
 // Method toDefend, for this assignment the list of territories outputted is arbitrary
 std::vector<Territory *> Player::toDefend()
 {
@@ -151,11 +165,16 @@ std::vector<Territory *> Player::toAttack()
     return *territories;
 }
 
-// Method to issue an order
-void Player::issueOrder()
-{
-    orders->push_back(new Order());            // adds an Order object to the list of orders
-    std::cout << "Order issued." << std::endl; // Print statement for order issued
+// method to issue an order
+void Player::issueOrder(Order* newOrder) {
+    // check if order exists
+    if (newOrder != nullptr) {
+        orders->push_back(newOrder);
+        // Output player name and order
+        std::cout << "Order issued by " << this->getName() << ": " << *newOrder << std::endl; 
+    } else {
+        std::cout << "Invalid order!" << std::endl;
+    }
 }
 
 // Stream insertion operator
@@ -163,7 +182,7 @@ std::ostream &operator<<(std::ostream &os, const Player &player)
 { // Overload for << operator
     // output number of territories, cards and orders
     os << player.name << " has " << player.territories->size() << " territories, "
-       << player.handOfCards->size() << " cards, and "
+ //      << player.handOfCards->getNumOfCards() << " cards, and "
        << player.orders->size() << " orders.";
-    return os; // return output stream
+    return os;
 }

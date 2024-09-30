@@ -1,3 +1,6 @@
 .vscode/
 warzone.exe
 my_program.exe
+DummyCards.h
+DummyOrder.h
+.DS_Store

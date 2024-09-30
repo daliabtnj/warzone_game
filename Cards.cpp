@@ -48,6 +48,8 @@ std::ostream& operator<<(std::ostream& os, const Card& card)
         case Card::BLOCKADE: os << "BLOCKADE \n"; break;
         case Card::AIRLIFT: os << "AIRLIFT \n"; break;
         case Card::DIPLOMACY: os << "DIPLOMACY \n"; break;
+        case Card::EMPTY: os << "EMPTY \n"; break;  // Handle the EMPTY case
+        default: os << "Unknown Type \n"; break;    // Optional: Handle any unknown cases
     }
     return os;  // Return the output stream
 }
@@ -291,3 +293,5 @@ const Card& Hand::getCardAt(int index) const
     }
     return handOfCards[index];  // Return the card at the specified index
 }
+
+
