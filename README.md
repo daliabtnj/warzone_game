@@ -22,7 +22,7 @@ Team members:
 1. From terminal, go to the project root directory and type cmd:
 
 ```
-g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp driver.cpp
+g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp MapDriver.cpp
 ```
 
 This will generate a warzone executable file.
