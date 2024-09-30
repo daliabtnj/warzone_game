@@ -14,9 +14,7 @@ Map *MapLoader::loadMap(const std::string &filename)
     return map;
 }
 
-// TODO: the following logic is not totally accurate.
-// For example, the map txt file has numbers after each territory; the following approach does not consider them.
-// I need to ask the professor to explain the syntax of the map txt files the code should read.
+// parses map file
 void MapLoader::parseMapFile(const std::string &filename, Map *map)
 {
     std::ifstream file(filename); // ifstream is a stream class to read from files
