@@ -2,11 +2,34 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <regex>
 
 Map *MapLoader::loadMap(const std::string &filename)
 {
     // Create a new Map object
     Map *map = new Map();
+
+    if (isFileEmpty(filename))
+    {
+        std::cerr << "Invalid Map as it is empty" << std::endl;
+        delete map;     // Clean up map object to indicate failure
+        return nullptr; // Return nullptr to indicate that the map is invalid
+    }
+
+    // Check for required sections
+    if (!hasRequiredSections(filename))
+    {
+        std::cerr << "Invalid Map file as it does not contain all required sections." << std::endl;
+        delete map;
+        return nullptr;
+    }
+
+    if (!isValidFormat(filename))
+    {
+        std::cerr << "Invalid Map file, format is not respected" << std::endl;
+        delete map;
+        return nullptr;
+    }
 
     // Call the parsing function to read the map file
     parseMapFile(filename, map);
@@ -14,7 +37,95 @@ Map *MapLoader::loadMap(const std::string &filename)
     return map;
 }
 
-// parses map file
+bool MapLoader::isValidFormat(const std::string &filename)
+{
+    std::ifstream file(filename);
+    std::string line;
+    std::string currentSection;
+    std::regex mapRegex(R"(^\w+=.+$)"), // Regex for Map entries
+        continentRegex(R"(^[\w\s]+=\d+$)");
+    // territoryRegex(R"(^[A-Za-z0-9]+,\d+,\d+,[A-Za-z0-9]+(?:,[A-Za-z0-9]+)+$)");  // Regex for Continents entries
+
+    while (getline(file, line))
+    {
+        if (line.empty())
+            continue;
+        if (line.find("[Map]") != std::string::npos)
+            currentSection = "Map";
+        else if (line.find("[Continents]") != std::string::npos)
+            currentSection = "Continents";
+        else if (line.find("[Territories]") != std::string::npos)
+            currentSection = "Territories";
+        else
+        {
+            if (currentSection == "Map")
+            {
+                if (!std::regex_match(line, mapRegex))
+                {
+                    file.close();
+                    return false;
+                }
+            }
+            else if (currentSection == "Continents")
+            {
+                if (!std::regex_match(line, continentRegex))
+                {
+                    file.close();
+                    return false;
+                }
+            }
+            // else if (currentSection == "Territories") {
+            //     if (!std::regex_match(line, territoryRegex)) {
+            //         file.close();
+            //         return false;
+            //     }
+            // }
+        }
+    }
+    file.close();
+    return true; // Only returns true if all formats are correct
+}
+
+bool MapLoader::isFileEmpty(const std::string &filename)
+{
+    std::ifstream file(filename);
+    return file.peek() == std::ifstream::traits_type::eof();
+}
+
+bool MapLoader::hasRequiredSections(const std::string &filename)
+{
+    std::ifstream file(filename);
+    bool mapSectionFound = false;
+    bool continentsSectionFound = false;
+    bool territoriesSectionFound = false;
+
+    std::string line;
+    while (getline(file, line))
+    {
+        std::string type;
+        std::istringstream iss(line);
+        iss >> type;
+
+        if (type == "[Map]")
+        {
+            mapSectionFound = true;
+        }
+        else if (type == "[Continents]")
+        {
+            continentsSectionFound = true;
+        }
+        else if (type == "[Territories]")
+        {
+            territoriesSectionFound = true;
+        }
+    }
+
+    return mapSectionFound && continentsSectionFound && territoriesSectionFound;
+}
+
+// TODO: the following logic is not totally accurate.
+// For example, the map txt file has numbers after each territory; the following approach does not consider them.
+// I need to ask the professor to explain the syntax of the map txt files the code should read.
 void MapLoader::parseMapFile(const std::string &filename, Map *map)
 {
     std::ifstream file(filename); // ifstream is a stream class to read from files
