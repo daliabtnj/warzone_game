@@ -10,14 +10,14 @@ void testCards()
 {
     // Create an array of CardTypes for testing
     Card::CardType cardTypes[] = {
-        Card::BOMB, Card::REINFORCEMENT, Card::AIRLIFT, Card::BLOCKADE, Card::DIPLOMACY
-    };
+        Card::BOMB, Card::REINFORCEMENT, Card::AIRLIFT, Card::BLOCKADE, Card::DIPLOMACY};
 
     // Initialize an array to hold all the card objects created above, used for the Deck object
     Card allCards[40];
 
     // Use a loop to fill the allCards array by cycling through the card types
-    for (int i = 0; i < 40; ++i) {
+    for (int i = 0; i < 40; ++i)
+    {
         allCards[i] = Card(cardTypes[i % 5]); // Cycles through 5 card types
     }
 
@@ -34,7 +34,7 @@ void testCards()
     Player testPlayer("Bo7");
 
     // Draw 5 cards from the deck and add them to the hand
-    for(int i = 0; i < 5; i++)
+    for (int i = 0; i < 5; i++)
     {
         testDeck.draw(testHand);
     }
@@ -43,22 +43,21 @@ void testCards()
     std::cout << testHand;
     std::cout << testDeck;
 
-    Card temp;  // Temporary card object for holding drawn cards
+    Card temp; // Temporary card object for holding drawn cards
 
     // Play each of the drawn cards from the hand
-    for(int i = 0; i < 5; i ++)
+    for (int i = 0; i < 5; i++)
     {
-        temp = testHand.getCardAt(i);   // Get the card at index i
-        temp.play(testHand, testDeck, testPlayer);  // Play the card, affecting both the hand and the deck
+        temp = testHand.getCardAt(i);              // Get the card at index i
+        temp.play(testHand, testDeck, testPlayer); // Play the card, affecting both the hand and the deck
     }
 
     // Output the final state of the hand and the deck after playing the cards
     std::cout << testHand;
     std::cout << testDeck;
-
 }
 
-int main() 
+int main()
 {
     testCards();
     return 0;
