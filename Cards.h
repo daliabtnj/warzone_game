@@ -129,7 +129,7 @@ public:
     int getCardCount() const { return cardCount; }
 
     // Method to add a card to the hand
-    bool addCard(const Card &card);
+    void addCard(const Card &newCard);
 };
 
 #endif

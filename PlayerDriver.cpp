@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Map.h"
+#include "Cards.h"
 #include <string>
 #include <iostream>
 
@@ -13,6 +14,11 @@ void testPlayers() {
     Territory* t4 = new Territory("United States", "America", 8);
     Territory* t5 = new Territory("England", "Europe", 5);
 
+    // create cards
+    Card* bomb = new Card(Card::BOMB);
+    Card* reinforcement = new Card(Card::REINFORCEMENT);
+    Card* blockade = new Card(Card::BLOCKADE);
+
     Player player1("didou"); // create a player
     Player player2;
     player1.addTerritory(t1);
@@ -21,44 +27,48 @@ void testPlayers() {
     player2.addTerritory(t4);
     player2.addTerritory(t5);
 
+    std::cout << "\n*******************************************\n";
+
+    // add cards to player's hand
+    std::cout << "\nADD CARDS TO PLAYER'S HAND\n" << std::endl;
+
+    player1.addCards(bomb);
+    player1.addCards(reinforcement);
+    player1.addCards(blockade);
+
+    // Display the player's hand
+    player1.displayHand();
+
+    std::cout << "\n*******************************************\n";
+
+
     // test to defend
-    std::cout << "\nWe will test the method to defend:\n";
+    std::cout << "\nTEST METHOD TO DEFEND\n\n";
     player1.toDefend();
 
+    std::cout << "\n*******************************************\n";
+
+
     // test to attack
-    std::cout << "\nWe will test the method to attack:\n";
+    std::cout << "\nTEST METHOD TO ATTACK\n\n";
     player2.toAttack();
 
+    std::cout << "\n*******************************************\n";
+
     // test issue order
-    std::cout << "\nWe will test the method to issue orders\n";
+    std::cout << "\nTEST METHOD TO ISSUE ORDERS\n\n";
     player1.issueOrder(new DeployOrder());      // Issue a Deploy order
     player1.issueOrder(new AdvanceOrder());     // Issue an Advance order
     player1.issueOrder(new BombOrder());        // Issue a Bomb order
     player1.issueOrder(new BlockadeOrder());
     player1.issueOrder(new AirliftOrder());
     player1.issueOrder(new NegotiateOrder());
-    std::cout << "\n";
 
-    // testing hand functionalities
-/*
-  // creating cards
-    Card card1 = Card(Card::BOMB);
-    Card card2 = Card(Card::REINFORCEMENT);
-    Card card3 = Card(Card::AIRLIFT);
 
-    // 
-    Card allCards[3] = {card1, card2, card3};
-    Deck testDeck(allCards);
-    Hand playerHand;
-
-    // Draw 2 cards from the deck and add them to the hand
-    for(int i = 0; i < 2; i++)
-    {
-        testDeck.draw(playerHand);
-    }
-*/
+    std::cout << "\n*******************************************\n";
   
     // Output player status
+    std::cout << "\nOUTPUT PLAYER'S STATUS\n\n";
     std::cout << player1 << std::endl;  // Print player information using overloaded << operator
     std::cout << player2 << std::endl;  
     std::cout << "\n\n Code works, stop making wars - peace out";

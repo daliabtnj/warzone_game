@@ -21,6 +21,7 @@ Player::Player()
     territories = new std::vector<Territory *>();
     handOfCards = new Hand();
     orders = new std::vector<Order *>();
+    cardsInHand = 0;
 }
 
 // parameterized constructor, takes okayer name as param
@@ -71,6 +72,9 @@ Player::~Player()
 {
     delete territories;
     delete handOfCards;
+    for (Order* order : *orders) {
+        delete order;
+    }
     delete orders;
 }
 
@@ -85,17 +89,14 @@ void Player::setName(const std::string &newName)
     name = newName;
 }
 
+Hand* Player::getHandOfCards() const {
+    return handOfCards;
+}
+
 std::vector<Territory *> Player::getTerritories() const
 {
     return *territories;
 }
-
-// error on this line "getHandOfCards" underlined
-Hand* Player::getHandOfCards() const
-{
-    return handOfCards;
-}
-
 
 std::vector<Order *> Player::getOrders() const
 {
@@ -131,22 +132,26 @@ void Player::removeTerritory(Territory *territory)
     }
 }
 
-// TODO Method to add a card to hand of player
-// TODO method to display player's hand
-/*
-write a unction that adds cards to this hand of cards according to the hand of cards 
-regulation form Cards.cpp . then we output that the player has a hand of cards, or we
-display which cards the player has. in the test driver, we create cards, we add them to 
-the hand of the specific player then we have an output string that we have to create in 
-player.cpp that will say whats in the hand of cards, or we use the Overloaded output 
-operator from the Hand class
-*/
+// method to add a card to the hand
+void Player::addCards(Card* card) {
+    if (card != nullptr) {
+        handOfCards->addCard(*card);  
+        cardsInHand++;
+    } else {
+        std::cout << "Invalid card!" << std::endl;
+    }
+}
 
+// Method to display the hand of cards
+void Player::displayHand() const {
+    std::cout << *handOfCards; 
+}
 
 // Method toDefend, for this assignment the list of territories outputted is arbitrary
 std::vector<Territory *> Player::toDefend()
 {
     std::cout << "Territories to defend:\n";
+    std::cout << "----------------------\n";
     for (auto territory : *territories)
     {
         std::cout << territory->getName() << std::endl; // Print the territory names
@@ -158,6 +163,7 @@ std::vector<Territory *> Player::toDefend()
 std::vector<Territory *> Player::toAttack()
 {
     std::cout << "Territories to attack:\n";
+    std::cout << "----------------------\n";
     for (auto territory : *territories)
     {
         std::cout << territory->getName() << std::endl; // Print the territory names (all the territories that are owoned by the player)
@@ -182,7 +188,7 @@ std::ostream &operator<<(std::ostream &os, const Player &player)
 { // Overload for << operator
     // output number of territories, cards and orders
     os << player.name << " has " << player.territories->size() << " territories, "
- //      << player.handOfCards->getNumOfCards() << " cards, and "
+       << player.cardsInHand << " cards and "
        << player.orders->size() << " orders.";
     return os;
 }

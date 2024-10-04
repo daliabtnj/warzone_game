@@ -59,6 +59,9 @@ std::ostream &operator<<(std::ostream &os, const Card &card)
     case Card::DIPLOMACY:
         os << "DIPLOMACY ";
         break;
+    default:
+        std::cout << "Unknown card type!\n";
+        return os; // Add this to avoid returning without outputting anything
     }
     return os; // Return the output stream
 }
@@ -108,6 +111,9 @@ void Card::play(Hand &hand, Deck &deck, Player &player)
             case DIPLOMACY:
                 order = new NegotiateOrder();
                 break;
+            case EMPTY:
+                 std::cout << "Cannot play an EMPTY card!\n";
+                 return;
             default:
                 std::cout << "Unknown card type!\n";
                 return;
@@ -373,3 +379,21 @@ const Card &Hand::getCardAt(int index) const
     }
     return handOfCards[index]; // Return the card at the specified index
 }
+
+void Hand::addCard(const Card &newCard) {
+    // Logic to add a card to the hand
+    const Card* currentHand = getHand();
+    
+    // Find the first available empty slot in the hand
+    for (int i = 0; i < 7; ++i) {
+        if (currentHand[i].getType() == Card::EMPTY) {
+            setCardAt(i, newCard); // Add the new card to the empty slot
+            std::cout << "Added " << newCard << " to hand.\n";
+            return;
+        }
+    }
+    
+    // If no empty slot is found, the hand is full
+    std::cout << "Hand is full. Cannot add more cards.\n";
+}
+

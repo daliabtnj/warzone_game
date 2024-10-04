@@ -19,10 +19,12 @@ class BombOrder;
 class BlockadeOrder; 
 class AirliftOrder;  
 class NegotiateOrder;
+class Deck;
 
 class Player{
 private:
     static int playerCount;
+    int cardsInHand;
     std::string name;
 
     // pointers to a vector of pointers to objects (Territory, Card, Order)
@@ -39,20 +41,21 @@ public:
     ~Player(); //destructor
 
     // getters & setters
-    std::string getName() const; // get the player's name
-    const Hand& getHand() const; // Getter for player's hand
-    void setName(const std::string& newName);
+    std::string getName() const; // getter for player's name
+    Hand* getHandOfCards() const; // getter for player's hand
+    void setName(const std::string& newName); // setter for name
     std::vector<Territory*> getTerritories() const;  // get the territories owned by the player
-    Hand* getHandOfCards() const;  // get the player's hand of cards
     std::vector<Order*> getOrders() const;  // get the orders issued by the player
 
     // methods to add and remove territory from a player
     void addTerritory(Territory* territory);
     void removeTerritory(Territory* territory);
 
-    // method to draw a card and add it to player's hand
-    void drawCard(Card* card); // Method to add a card to the player's hand
+    // method to add cards
+    void addCards(Card* card);
 
+    // method to display the hand of cards
+    void displayHand() const;
 
     // methods defend/attack : vectors of pointers to objects
     std::vector<Territory*> toDefend(); // outputs a list of territories to defend
