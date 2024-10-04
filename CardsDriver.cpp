@@ -62,8 +62,3 @@ int main()
     testCards();
     return 0;
 }
-
-/*
-To compile:
-g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp Cards.cpp CardsDriver.cpp Player.cpp
-*/
