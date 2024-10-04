@@ -14,8 +14,6 @@ public:
 private:
     // Helper function to parse the map file
     void parseMapFile(const std::string &filename, Map *map);
-
-    void parseMapFile(const std::string &filename, Map *map);
     bool isFileEmpty(const std::string &filename);
     bool hasRequiredSections(const std::string &filename);
     bool isValidFormat(const std::string &filename);
