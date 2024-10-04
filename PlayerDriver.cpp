@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "PlayerDriver.h"
 #include "Map.h"
 #include "Cards.h"
 #include <string>
@@ -76,17 +77,7 @@ void testPlayers() {
     std::cout << "\n<3  <3  <3  <3  <3  <3  <3  <3  <3  <3  <3\n\n";
 }
 
-int main() {
-    testPlayers(); 
-    return 0;
-}
-
-/*
-
-Compile code : 
-g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp Player.cpp PlayerDriver.cpp Order.cpp Cards.cpp
-
-Run code: 
-./warzone
-
-*/ 
+// int main() {
+//     testPlayers(); 
+//     return 0;
+// }

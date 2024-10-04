@@ -17,6 +17,30 @@ Team members:
 
 ## Running the code
 
+### Main Driver
+
+1. Make sure to comment out the main functions of all other Driver files.
+
+2. From terminal, go to the project root directory and type cmd:
+
+`g++ -std=c++11 -o warzone MainDriver.cpp Map.cpp MapLoader.cpp MapDriver.cpp Player.cpp PlayerDriver.cpp Order.cpp OrdersDriver.cpp Cards.cpp CardsDriver.cpp GameEngine.cpp GameEngineDriver.cpp`
+
+This will generate a warzone executable file.
+
+3. Then, depending on your OS:
+
+- Windows run:
+
+```
+./warzone
+```
+
+- macOS run:
+
+```
+./warzone.exe
+```
+
 ### Map
 
 1. From terminal, go to the project root directory and type cmd:
@@ -41,7 +65,7 @@ This will generate a warzone executable file.
 ./warzone
 ```
 
-## Player
+### Player
 
 1. From terminal, go to the project root directory and type cmd:
 
@@ -63,11 +87,33 @@ This will generate a warzone executable file.
 ./warzone.exe
 ```
 
-## Cards
+### Cards
 
 1. From terminal, go to the project root directory and type cmd:
 
 `g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp Cards.cpp CardsDriver.cpp Order.cpp Player.cpp`
+
+This will generate a warzone executable file.
+
+2. Then, depending on your OS:
+
+- Windows run:
+
+```
+./warzone
+```
+
+- macOS run:
+
+```
+./warzone.exe
+```
+
+### Game Engine
+
+1. From terminal, go to the project root directory and type cmd:
+
+`g++ -std=c++11 -o warzone GameEngine.cpp GameEngineDriver.cpp`
 
 This will generate a warzone executable file.
 
