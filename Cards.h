@@ -13,7 +13,7 @@ class Hand;
 class Deck;
 
 class Card // Card class definition
-{  
+
 public:
     // Enumeration for different types of cards
     enum CardType { EMPTY, BOMB, REINFORCEMENT, BLOCKADE, AIRLIFT, DIPLOMACY };
@@ -47,10 +47,9 @@ public:
     CardType getType() const;
 
     // Method to play the card, affecting the hand and deck
-    void play(Hand& hand, Deck& deck);
+    void play(Hand& hand, Deck& deck, Player& player);
 
 };
-
 // Deck class definition
 class Deck
 {
@@ -85,8 +84,11 @@ public:
 // Hand class definition
 class Hand
 {
+
 private:
     Card handOfCards[7];    // Array to hold the cards in the hand
+    int cardCount;          // Counter to track the number of cards in hand
+
 public:
     // Default constructor that initializes the hand
     Hand();
@@ -115,6 +117,12 @@ public:
 
     // Method to get a card at a specific index
     const Card& getCardAt(int index) const;
+
+    // Getter for card count
+    int getCardCount() const { return cardCount; }
+
+    // Method to add a card to the hand
+    bool addCard(const Card& card);
 };
 
 #endif

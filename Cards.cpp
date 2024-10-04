@@ -43,13 +43,11 @@ std::ostream& operator<<(std::ostream& os, const Card& card)
         return os << "";    // Return an empty string for an EMPTY card
     os << "Card Type: ";    // Print the card type
     switch (card.getType()) {
-        case Card::BOMB: os << "BOMB \n"; break;
-        case Card::REINFORCEMENT: os << "REINFORCEMENT \n"; break;
-        case Card::BLOCKADE: os << "BLOCKADE \n"; break;
-        case Card::AIRLIFT: os << "AIRLIFT \n"; break;
-        case Card::DIPLOMACY: os << "DIPLOMACY \n"; break;
-        case Card::EMPTY: os << "EMPTY \n"; break;  // Handle the EMPTY case
-        default: os << "Unknown Type \n"; break;    // Optional: Handle any unknown cases
+        case Card::BOMB: os << "BOMB "; break;
+        case Card::REINFORCEMENT: os << "REINFORCEMENT "; break;
+        case Card::BLOCKADE: os << "BLOCKADE "; break;
+        case Card::AIRLIFT: os << "AIRLIFT "; break;
+        case Card::DIPLOMACY: os << "DIPLOMACY "; break;
     }
     return os;  // Return the output stream
 }
@@ -73,37 +71,55 @@ Card::CardType Card::getType() const
 }
 
 // Method to play the card, affecting the player's hand and the deck
-void Card::play(Hand& hand, Deck& deck)
-{
-    // Search for this card in the player's hand
-    for (int i = 0; i < 7; ++i)
-    {
-        // Check if the current card in the hand matches the one being played
-        if (hand.getHand()[i] == *this) // Using the overloaded == operator
-        {
-            // Find an empty slot in the deck to return the card
-            for (int j = 0; j < 40; ++j)
-            {
-                if (deck.getDeck()[j].getType() == Card::EMPTY)
-                {
-                    deck.deckOfCards[j] = hand.getHand()[i]; // Add the card back to the deck
+void Card::play(Hand& hand, Deck& deck, Player& player) {
+    // Find the card in the player's hand
+    for (int i = 0; i < 7; ++i) {
+        if (hand.getHand()[i] == *this) {
+            // Create and issue a specific order based on card type
+            Order* order = nullptr;
+            switch (this->type) {
+                case BOMB:
+                    order = new BombOrder();
                     break;
+                case REINFORCEMENT:
+                    order = new DeployOrder();  // Assuming DeployOrder for reinforcements
+                    break;
+                case AIRLIFT:
+                    order = new AirliftOrder();
+                    break;
+                case BLOCKADE:
+                    order = new BlockadeOrder();
+                    break;
+                case DIPLOMACY:
+                    order = new NegotiateOrder();
+                    break;
+                default:
+                    std::cout << "Unknown card type!\n";
+                    return;
+            }
+
+            // Issue the order to the player
+            if (order != nullptr) {
+                player.issueOrder(order);
+            }
+
+            // Find the first empty slot in the deck to return the card
+            for (int j = 0; j < 40; ++j) {
+                if (deck.getDeck()[j].getType() == Card::EMPTY) {
+                    deck.deckOfCards[j] = *this;
+                    hand.setCardAt(i, Card(Card::EMPTY));  // Remove the card from the hand
+                    std::cout << player.getName() << " played " << *this << ", issued an order, and returned it to the deck.\n\n";
+                    return;  // Exit early since the card is now played
                 }
             }
 
-            // Remove the card from the hand by setting it to empty
-            hand.setCardAt(i, Card(Card::EMPTY)); // Set the card to empty
-            std::cout << "Played " << *this << " and returned it to the deck.\n";
+            // If no empty slot is found in the deck
+            std::cout << "No empty slot in the deck!\n";
             return;
         }
     }
-
-    // If the card wasn't found in the hand
     std::cout << "Card not found in hand!\n";
 }
-
-
-
 
 ////////////////////////////////////
 
@@ -151,10 +167,32 @@ Deck& Deck::operator=(const Deck& other)
 // Overloaded output operator for the Deck class
 std::ostream& operator<<(std::ostream& os, const Deck& deck)
 {
-    os << "Deck contains:\n";
+    os << "--------------\nDeck contains:\n--------------\n";
+    int count = 0;  // Counter to track the number of cards printed on the current line
     for (const auto& card : deck.deckOfCards) {
-        os << card ; // Use the overloaded operator for Card
+        // Skip the card if it's EMPTY
+        if (card.getType() == Card::EMPTY) {
+            continue; // Skip to the next card
+        }
+
+        os << card; // Use the overloaded operator for Card
+        count++;
+
+        // Print a newline after every 5 cards
+        if (count % 5 == 0) {
+            os << '\n';
+        } else {
+            os << ", "; // Add a comma and space between cards on the same line
+        }
     }
+
+    // If there are no cards printed, mention that
+    if (count == 0) {
+        os << "No cards available.\n"; // Optional: Handle the case when no cards are printed
+    } else {
+        os << '\n'; // Add a newline at the end of the printed cards
+    }
+
     return os;
 }
 
@@ -174,38 +212,34 @@ const Card* Deck::getDeck() const
 }
 
 // Method to draw a card from the deck and add it to the player's hand
-void Deck::draw(Hand& hand) // Hand is passed as a reference
-{
+void Deck::draw(Hand& hand) {
     const Card* currentHand = hand.getHand();
     int cardCount = 0;
 
-    // Count how many cards are currently in the hand (non-empty)
+    // Count how many cards are in the hand
     while (cardCount < 7 && currentHand[cardCount].getType() != Card::EMPTY) {
         cardCount++;
     }
 
-    // Draw a card if the hand can accept more cards
-    if (cardCount < 7)
-    {
-        std::random_device rd;  // Random number generator
+    // Draw a card if the hand is not full
+    if (cardCount < 7) {
+        std::random_device rd;
         std::mt19937 gen(rd());
-        std::uniform_int_distribution<> distr(0, 39); // Range: 0 to 39 (index)
+        std::uniform_int_distribution<> distr(0, 39);
 
-        // Generate a random index to draw from the deck
-        int randomIndex = distr(gen);
+        // Keep trying to draw a card until we find one that isn't EMPTY
+        int randomIndex;
+        do {
+            randomIndex = distr(gen);
+        } while (deckOfCards[randomIndex].getType() == Card::EMPTY);
 
-        // Add the drawn card to the hand using the setter method
-        hand.setCardAt(cardCount, deckOfCards[randomIndex]); // Properly set the card in the hand
-        deckOfCards[randomIndex] = Card(Card::EMPTY);
-    }
-    else {
-        std::cout << "Hand is full. Cannot draw more cards.\n"; // Optional message if hand is full
+        // Add the drawn card to the hand
+        hand.setCardAt(cardCount, deckOfCards[randomIndex]);
+        deckOfCards[randomIndex] = Card(Card::EMPTY);  // Mark the deck slot as empty
+    } else {
+        std::cout << "Hand is full. Cannot draw more cards.\n";
     }
 }
-
-
-
-
 ////////////////////////////////////
 
 // Default constructor for the Hand class
@@ -250,13 +284,23 @@ Hand& Hand::operator=(const Hand& other)
 }
 
 // Overloaded output operator for the Hand class
-std::ostream& operator<<(std::ostream& os, const Hand& hand)
-{
-    os << "Hand contains:\n";
-    const Card* cards = hand.getHand(); // Get the array of cards
-    for (int i = 0; i < 7; ++i) { // A hand can hold up to 7 cards
-        os << cards[i] << "\n"; // Use the overloaded operator for Card
+std::ostream& operator<<(std::ostream& os, const Hand& hand) {
+    os << "\nHand contains:\n--------------\n";
+    const Card* cards = hand.getHand();
+    bool isEmpty = true; // Flag to check if hand is empty
+
+    for (int i = 0; i < 7; ++i) {
+        if (cards[i].getType() != Card::EMPTY) {
+            os << cards[i] << "\n"; // Output non-empty cards
+            isEmpty = false; // Found a card, so hand is not empty
+        }
     }
+
+    // If no non-empty cards were found, display the empty message
+    if (isEmpty) {
+        os << "Nothing, there are no cards!\n\n";
+    }
+
     return os;
 }
 
@@ -292,6 +336,3 @@ const Card& Hand::getCardAt(int index) const
         throw std::out_of_range("Index out of bounds"); // Make sure the index is valid
     }
     return handOfCards[index];  // Return the card at the specified index
-}
-
-
