@@ -1,16 +1,17 @@
-#include "MapDriver.h"       // For testLoadMaps()
-#include "PlayerDriver.h"    // For testPlayers()
-#include "OrdersDriver.h"    // For testOrdersLists()
-#include "CardsDriver.h"     // For testCards()
+#include "MapDriver.h"        // For testLoadMaps()
+#include "PlayerDriver.h"     // For testPlayers()
+#include "OrdersDriver.h"     // For testOrdersLists()
+#include "CardsDriver.h"      // For testCards()
 #include "GameEngineDriver.h" // For testGameStates()
 
 #include <iostream>
 
-int main() {
+int main()
+{
     // Part 1: Map loading and validation
     std::cout << "=== Part 1: Map Loader and Validation ===" << std::endl;
     testLoadMaps();
-    
+
     // Part 2: Player functionalities
     std::cout << "\n=== Part 2: Player functionalities ===" << std::endl;
     testPlayers();
