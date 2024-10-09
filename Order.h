@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+class Player;
+class Territory;
+class Continent;
+
 // Base class Order
 class Order {
 protected:
@@ -18,6 +22,8 @@ public:
     virtual void execute() = 0; // Pure virtual method for execution
     virtual std::string getDescription() const = 0; // Pure virtual method for description
     friend std::ostream& operator<<(std::ostream& os, const Order& order); // Stream insertion operator
+    virtual Order* clone() const = 0;  // Pure virtual method for cloning
+
 };
 
 // Derived classes for different types of orders
@@ -28,6 +34,8 @@ public:
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
+    Order* clone() const override;  // Clone method
+
 };
 
 class AdvanceOrder : public Order {
@@ -37,6 +45,8 @@ public:
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
+    Order* clone() const override;
+
 };
 
 class BombOrder : public Order {
@@ -46,6 +56,7 @@ public:
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
+    Order* clone() const override;
 };
 
 class BlockadeOrder : public Order {
@@ -55,6 +66,7 @@ public:
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
+    Order* clone() const override;
 };
 
 class AirliftOrder : public Order {
@@ -64,6 +76,7 @@ public:
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
+    Order* clone() const override;
 };
 
 class NegotiateOrder : public Order {
@@ -73,6 +86,7 @@ public:
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
+    Order* clone() const override;
 };
 
 class OrdersList {
