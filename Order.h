@@ -5,101 +5,103 @@
 #include <string>
 #include <vector>
 
-class Player;
-class Territory;
-class Continent;
-
 // Base class Order
-class Order {
+class Order
+{
 protected:
-    bool executed; // Track if the order has been executed
+    bool executed;      // Track if the order has been executed
     std::string effect; // Store the effect after execution
 public:
     Order();
-    Order(const Order& other); // Copy constructor
-    virtual ~Order(); // Destructor
-    virtual bool validate() = 0; // Pure virtual method for validation
-    virtual void execute() = 0; // Pure virtual method for execution
-    virtual std::string getDescription() const = 0; // Pure virtual method for description
-    friend std::ostream& operator<<(std::ostream& os, const Order& order); // Stream insertion operator
-    virtual Order* clone() const = 0;  // Pure virtual method for cloning
-
+    Order(const Order &other);                                             // Copy constructor
+    virtual ~Order();                                                      // Destructor
+    virtual bool validate() = 0;                                           // Pure virtual method for validation
+    virtual void execute() = 0;                                            // Pure virtual method for execution
+    virtual std::string getDescription() const = 0;                        // Pure virtual method for description
+    friend std::ostream &operator<<(std::ostream &os, const Order &order); // Stream insertion operator
+    virtual Order *clone() const = 0;                                      // Pure virtual method for cloning
 };
 
 // Derived classes for different types of orders
-class DeployOrder : public Order {
+class DeployOrder : public Order
+{
 public:
     DeployOrder();
-    DeployOrder(const DeployOrder& other);
+    DeployOrder(const DeployOrder &other);
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
-    Order* clone() const override;  // Clone method
-
+    Order *clone() const override; // Clone method
 };
 
-class AdvanceOrder : public Order {
+class AdvanceOrder : public Order
+{
 public:
     AdvanceOrder();
-    AdvanceOrder(const AdvanceOrder& other);
+    AdvanceOrder(const AdvanceOrder &other);
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
-    Order* clone() const override;
-
+    Order *clone() const override;
 };
 
-class BombOrder : public Order {
+class BombOrder : public Order
+{
 public:
     BombOrder();
-    BombOrder(const BombOrder& other);
+    BombOrder(const BombOrder &other);
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
-    Order* clone() const override;
+    Order *clone() const override;
 };
 
-class BlockadeOrder : public Order {
+class BlockadeOrder : public Order
+{
 public:
     BlockadeOrder();
-    BlockadeOrder(const BlockadeOrder& other);
+    BlockadeOrder(const BlockadeOrder &other);
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
-    Order* clone() const override;
+    Order *clone() const override;
 };
 
-class AirliftOrder : public Order {
+class AirliftOrder : public Order
+{
 public:
     AirliftOrder();
-    AirliftOrder(const AirliftOrder& other);
+    AirliftOrder(const AirliftOrder &other);
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
-    Order* clone() const override;
+    Order *clone() const override;
 };
 
-class NegotiateOrder : public Order {
+class NegotiateOrder : public Order
+{
 public:
     NegotiateOrder();
-    NegotiateOrder(const NegotiateOrder& other);
+    NegotiateOrder(const NegotiateOrder &other);
     bool validate() override;
     void execute() override;
     std::string getDescription() const override;
-    Order* clone() const override;
+    Order *clone() const override;
 };
 
-class OrdersList {
+class OrdersList
+{
 private:
-    std::vector<Order*> orders;
+    std::vector<Order *> orders;
+
 public:
     OrdersList();
-    OrdersList(const OrdersList& other); // Copy constructor
-    ~OrdersList(); // Destructor
-    void issueOrder(Order* order); // Add order to the list
-    void removeOrder(int index); // Remove order from the list by index
-    void moveOrder(int fromIndex, int toIndex); // Move order within the list
-    friend std::ostream& operator<<(std::ostream& os, const OrdersList& ol); // Stream insertion operator
+    OrdersList(const OrdersList &other);                                     // Copy constructor
+    ~OrdersList();                                                           // Destructor
+    void issueOrder(Order *order);                                           // Add order to the list
+    void removeOrder(int index);                                             // Remove order from the list by index
+    void moveOrder(int fromIndex, int toIndex);                              // Move order within the list
+    friend std::ostream &operator<<(std::ostream &os, const OrdersList &ol); // Stream insertion operator
 };
 
 #endif
