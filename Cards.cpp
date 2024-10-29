@@ -85,55 +85,45 @@ Card::CardType Card::getType() const
 }
 
 // Method to play the card, affecting the player's hand and the deck
-void Card::play(Hand &hand, Deck &deck, Player &player)
-{
+void Card::play(Hand& hand, Deck& deck, Player& player) {
     // Find the card in the player's hand
-    for (int i = 0; i < 7; ++i)
-    {
-        if (hand.getHand()[i] == *this)
-        {
+    for (int i = 0; i < 7; ++i) {
+        if (*hand.getHand()[i] == *this) {
             // Create and issue a specific order based on card type
-            Order *order = nullptr;
-            switch (this->type)
-            {
-            case BOMB:
-                order = new BombOrder();
-                break;
-            case REINFORCEMENT:
-                order = new DeployOrder(); // Assuming DeployOrder for reinforcements
-                break;
-            case AIRLIFT:
-                order = new AirliftOrder();
-                break;
-            case BLOCKADE:
-                order = new BlockadeOrder();
-                break;
-            case DIPLOMACY:
-                order = new NegotiateOrder();
-                break;
-            case EMPTY:
-                 std::cout << "Cannot play an EMPTY card!\n";
-                 return;
-            default:
-                std::cout << "Unknown card type!\n";
-                return;
+            Order* order = nullptr;
+            switch (this->type) {
+                case BOMB:
+                    order = new BombOrder();
+                    break;
+                case REINFORCEMENT:
+                    order = new DeployOrder();  // Assuming DeployOrder for reinforcements
+                    break;
+                case AIRLIFT:
+                    order = new AirliftOrder();
+                    break;
+                case BLOCKADE:
+                    order = new BlockadeOrder();
+                    break;
+                case DIPLOMACY:
+                    order = new NegotiateOrder();
+                    break;
+                default:
+                    std::cout << "Unknown card type!\n";
+                    return;
             }
 
             // Issue the order to the player
-            if (order != nullptr)
-            {
+            if (order != nullptr) {
                 player.issueOrder(order);
             }
 
             // Find the first empty slot in the deck to return the card
-            for (int j = 0; j < 40; ++j)
-            {
-                if (deck.getDeck()[j].getType() == Card::EMPTY)
-                {
-                    deck.deckOfCards[j] = *this;
-                    hand.setCardAt(i, Card(Card::EMPTY)); // Remove the card from the hand
+            for (int j = 0; j < 40; ++j) {
+                if (deck.getDeck()[j]->getType() == Card::EMPTY) {
+                    deck.deckOfCards[j] = new Card(*this); // Copy the card to the deck
                     std::cout << player.getName() << " played " << *this << ", issued an order, and returned it to the deck.\n\n";
-                    return; // Exit early since the card is now played
+                    hand.setCardAt(i, Card(Card::EMPTY));  // Remove the card from the hand
+                    return;  // Exit early since the card is now played
                 }
             }
 
@@ -152,26 +142,33 @@ Deck::Deck()
 {
     for (int i = 0; i < 40; ++i)
     {
-        deckOfCards[i] = Card(); // Initialize each card in the deck to EMPTY
+        deckOfCards[i] = new Card();    // Initialize each card in the deck to EMPTY
     }
 }
 
 // Constructor that initializes the deck with an array of cards
-Deck::Deck(Card deck[])
+Deck::Deck(Card* deck[])
 {
     for (int i = 0; i < 40; ++i)
     {
-        deckOfCards[i] = deck[i]; // Copy each card
+        deckOfCards[i] = new Card(*deck[i]); // Copy each card
     }
 }
 
 // Copy constructor for the Deck class
-Deck::Deck(const Deck &other)
+Deck::Deck(const Deck& other)
 {
     // Copy each card individually
     for (int i = 0; i < 40; ++i)
     {
-        deckOfCards[i] = other.deckOfCards[i]; // Properly copy each element
+        deckOfCards[i] = new Card(*other.deckOfCards[i]); // Properly copy each element
+    }
+}
+
+// Destructor for the Deck class
+Deck::~Deck() {
+    for (int i = 0; i < 40; ++i) {
+        delete deckOfCards[i];  // Free each card's memory
     }
 }
 
@@ -189,92 +186,84 @@ Deck &Deck::operator=(const Deck &other)
 }
 
 // Overloaded output operator for the Deck class
-std::ostream &operator<<(std::ostream &os, const Deck &deck)
+std::ostream& operator<<(std::ostream& os, const Deck& deck)
 {
     os << "--------------\nDeck contains:\n--------------\n";
-    int count = 0; // Counter to track the number of cards printed on the current line
-    for (const auto &card : deck.deckOfCards)
-    {
-        // Skip the card if it's EMPTY
-        if (card.getType() == Card::EMPTY)
-        {
-            continue; // Skip to the next card
+    int count = 0;  // Counter to track the number of cards printed on the current line
+    
+    // Loop through the deckOfCards array
+    for (int i = 0; i < 40; ++i) {
+        if (deck.deckOfCards[i]->getType() == Card::EMPTY) {
+            continue; // Skip empty cards
         }
 
-        os << card; // Use the overloaded operator for Card
+        os << *deck.deckOfCards[i];  // Dereference the pointer to access the actual card object
         count++;
 
         // Print a newline after every 5 cards
-        if (count % 5 == 0)
-        {
+        if (count % 5 == 0) {
             os << '\n';
-        }
-        else
-        {
+        } else {
             os << ", "; // Add a comma and space between cards on the same line
         }
     }
 
-    // If there are no cards printed, mention that
-    if (count == 0)
-    {
-        os << "No cards available.\n"; // Optional: Handle the case when no cards are printed
-    }
-    else
-    {
-        os << '\n'; // Add a newline at the end of the printed cards
+    // If no cards were printed, mention that
+    if (count == 0) {
+        os << "No cards available.\n";  // Handle the case when no cards are printed
+    } else {
+        os << '\n';  // Add a newline at the end of the printed cards
     }
 
     return os;
 }
 
 // Setter for the deck of cards
-void Deck::setDeck(const Card deck[])
+void Deck::setDeck(Card* deck[])
 {
     for (int i = 0; i < 40; ++i)
     {
-        deckOfCards[i] = deck[i]; // Copy each card from the input array
+        delete deckOfCards[i];  // Delete the old card
+        deckOfCards[i] = new Card(*deck[i]); // Copy the new card
     }
 }
 
 // Getter for the deck of cards
-const Card *Deck::getDeck() const
+Card* const* Deck::getDeck() const
 {
     return deckOfCards;
 }
 
 // Method to draw a card from the deck and add it to the player's hand
-void Deck::draw(Hand &hand)
-{
-    const Card *currentHand = hand.getHand();
+void Deck::draw(Hand& hand) {
+    // Use the constant pointer to the hand, but we don't need to modify it directly
+    const Card* const* currentHand = hand.getHand(); 
     int cardCount = 0;
 
     // Count how many cards are in the hand
-    while (cardCount < 7 && currentHand[cardCount].getType() != Card::EMPTY)
-    {
+    while (cardCount < 7 && currentHand[cardCount]->getType() != Card::EMPTY) {
         cardCount++;
     }
 
     // Draw a card if the hand is not full
-    if (cardCount < 7)
-    {
+    if (cardCount < 7) {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_int_distribution<> distr(0, 39);
 
         // Keep trying to draw a card until we find one that isn't EMPTY
         int randomIndex;
-        do
-        {
+        do {
             randomIndex = distr(gen);
-        } while (deckOfCards[randomIndex].getType() == Card::EMPTY);
+        } while (deckOfCards[randomIndex]->getType() == Card::EMPTY);
 
-        // Add the drawn card to the hand
-        hand.setCardAt(cardCount, deckOfCards[randomIndex]);
-        deckOfCards[randomIndex] = Card(Card::EMPTY); // Mark the deck slot as empty
-    }
-    else
-    {
+        // Add the drawn card to the hand at the next available slot
+        hand.setCardAt(cardCount, *deckOfCards[randomIndex]);
+
+        // Remove the card from the deck properly
+        delete deckOfCards[randomIndex];  // Deallocate the memory for the drawn card
+        deckOfCards[randomIndex] = new Card(Card::EMPTY);  // Mark the deck slot as empty
+    } else {
         std::cout << "Hand is full. Cannot draw more cards.\n";
     }
 }
@@ -283,28 +272,34 @@ void Deck::draw(Hand &hand)
 // Default constructor for the Hand class
 Hand::Hand()
 {
-    for (int i = 0; i < 5; ++i) // Player starts with 5 cards, but can have a maximum of 7 cards
+    for (int i = 0; i < 7; ++i) // Player starts with a maximum of 7 cards
     {
-        handOfCards[i] = Card(); // Initialize each card in the hand to EMPTY
+        handOfCards[i] = new Card();    // Initialize each card in the hand to EMPTY
     }
 }
 
 // Constructor that initializes the hand with an array of cards
-Hand::Hand(Card hand[])
+Hand::Hand(Card* hand[])
 {
     for (int i = 0; i < 7; ++i)
     {
-        handOfCards[i] = hand[i]; // Copy each card
+        handOfCards[i] = new Card(*hand[i]);    // Copy each card from the array
     }
 }
 
 // Copy constructor for the Hand class
-Hand::Hand(const Hand &other)
+Hand::Hand(const Hand& other)
 {
-    // Copy each card individually
     for (int i = 0; i < 7; ++i)
     {
-        handOfCards[i] = other.handOfCards[i]; // Properly copy each element
+        handOfCards[i] = new Card(*other.handOfCards[i]);    // Copy each card from the other hand
+    }
+}
+
+// Destructor for the Hand class
+Hand::~Hand() {
+    for (int i = 0; i < 7; ++i) {
+        delete handOfCards[i];  // Free each card's memory
     }
 }
 
@@ -322,71 +317,74 @@ Hand &Hand::operator=(const Hand &other)
 }
 
 // Overloaded output operator for the Hand class
-std::ostream &operator<<(std::ostream &os, const Hand &hand)
+std::ostream& operator<<(std::ostream& os, const Hand& hand)
 {
-    os << "\nHand contains:\n--------------\n";
-    const Card *cards = hand.getHand();
-    bool isEmpty = true; // Flag to check if hand is empty
+    os << "--------------\nHand contains:\n--------------\n";
+    int count = 0;
 
-    for (int i = 0; i < 7; ++i)
-    {
-        if (cards[i].getType() != Card::EMPTY)
-        {
-            os << cards[i] << "\n"; // Output non-empty cards
-            isEmpty = false;        // Found a card, so hand is not empty
+    for (int i = 0; i < 7; ++i) {
+        if (hand.handOfCards[i]->getType() == Card::EMPTY) {
+            continue; // Skip empty cards
+        }
+
+        os << *hand.handOfCards[i];  // Dereference the pointer to access the actual card object
+        count++;
+
+        // Print a newline after every 5 cards
+        if (count % 5 == 0) {
+            os << '\n';
+        } else {
+            os << ", "; // Add a comma and space between cards on the same line
         }
     }
 
-    // If no non-empty cards were found, display the empty message
-    if (isEmpty)
-    {
-        os << "Nothing, there are no cards!\n\n";
+    if (count == 0) {
+        os << "Nothing, hand is empty!\n";
+    } else {
+        os << '\n';
     }
 
     return os;
 }
 
 // Setter for the hand of cards
-void Hand::setHand(const Card hand[])
+void Hand::setHand(Card* hand[])
 {
     for (int i = 0; i < 7; ++i)
     {
-        handOfCards[i] = hand[i]; // Copy each card from the input array
+        delete handOfCards[i];  // Free the memory for the old cards
+        handOfCards[i] = new Card(*hand[i]);    // Copy the new cards
     }
 }
 
 // Getter for the hand of cards
-const Card *Hand::getHand() const
+const Card* const* Hand::getHand() const
 {
     return handOfCards; // Return the array of cards
 }
 
-// Method to set a specific card at a given index
-void Hand::setCardAt(int index, const Card &card)
+// Set a specific card in the hand at a given index
+void Hand::setCardAt(int index, const Card& card)
 {
     if (index >= 0 && index < 7) // Make sure the index is valid
     {
-        handOfCards[index] = card; // Set the card at the specified index
+        delete handOfCards[index];  // Delete the old card
+        handOfCards[index] = new Card(card);  // Allocate new memory and copy the card
     }
 }
 
-// Method to get a card at a specific index
-const Card &Hand::getCardAt(int index) const
-{
-    if (index < 0 || index >= 7)
-    {
-        throw std::out_of_range("Index out of bounds"); // Make sure the index is valid
+// Getter for a specific card in the hand
+Card*& Hand::getCardAt(int index) {
+    if (index >= 0 && index < 7) {
+        return handOfCards[index];  // Return the reference to the pointer to allow modifications
     }
-    return handOfCards[index]; // Return the card at the specified index
+    throw std::out_of_range("Index out of bounds");  // Better error handling instead of returning nullptr
 }
 
 void Hand::addCard(const Card &newCard) {
-    // Logic to add a card to the hand
-    const Card* currentHand = getHand();
-    
     // Find the first available empty slot in the hand
     for (int i = 0; i < 7; ++i) {
-        if (currentHand[i].getType() == Card::EMPTY) {
+        if (handOfCards[i] && handOfCards[i]->getType() == Card::EMPTY) {
             setCardAt(i, newCard); // Add the new card to the empty slot
             std::cout << "Added " << newCard << " to hand.\n";
             return;
@@ -396,4 +394,3 @@ void Hand::addCard(const Card &newCard) {
     // If no empty slot is found, the hand is full
     std::cout << "Hand is full. Cannot add more cards.\n";
 }
-

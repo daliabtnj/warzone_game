@@ -15,13 +15,13 @@ Player::Player()
     playerCount++;
 
     // assign a default unique name
-    name = "user" + std::to_string(playerCount + 1000);
+    name = new std::string("user" + std::to_string(playerCount + 1000)); // Unique default name
 
     // allocate memory to new vectors that will hold pointers to objetcs
     territories = new std::vector<Territory *>();
     handOfCards = new Hand();
-    orders = new std::vector<Order *>();
-    cardsInHand = 0;
+    orderList = new OrdersList();
+    cardsInHand = new int(0);  // Initializing cards in hand to 0
 }
 
 // parameterized constructor, takes okayer name as param
@@ -29,19 +29,21 @@ Player::Player()
 Player::Player(const std::string &playerName)
 {
     playerCount++;     // Increment player count
-    name = playerName; // Assign the provided name
+    name = new std::string(playerName); // Assign the provided name
     territories = new std::vector<Territory *>();
     handOfCards = new Hand();
-    orders = new std::vector<Order *>();
+	orderList = new OrdersList();
+    cardsInHand = new int(0); // Initialize cards to 0
 }
 
 // Copy constructor
 Player::Player(const Player &other)
 {
-    name = other.name; // Copy name
+    name = new std::string(*(other.name));  
     territories = new std::vector<Territory *>(*(other.territories));
     handOfCards = new Hand(*(other.handOfCards));
-    orders = new std::vector<Order *>(*(other.orders));
+	orderList = new OrdersList(*(other.orderList));
+    cardsInHand = new int(*(other.cardsInHand));  
 }
 
 // Assignment Operator: allows one object to be assigned the properties (data members) of another object
@@ -51,17 +53,21 @@ Player &Player::operator=(const Player &other)
     if (this != &other)
     { // Check for self-assignment
         // Free memory of the current object's attributes to avoid memory leaks
+        delete name;
         delete territories;
         delete handOfCards;
-        delete orders;
+        delete orderList;
+        delete cardsInHand;
 
         // Copy attributes from the other player
-        name = other.name; // Copy name
+        name = new std::string(*(other.name));
 
         // Create new copies of the territories, handOfCards, and orders lists
         territories = new std::vector<Territory *>(*(other.territories));
         handOfCards = new Hand(*(other.handOfCards));
-        orders = new std::vector<Order *>(*(other.orders));
+	    orderList = new OrdersList(*(other.orderList));
+        cardsInHand = new int(*(other.cardsInHand));
+
     }
     return *this; // Return a reference to the current object to allow chained assignments
 }
@@ -70,23 +76,22 @@ Player &Player::operator=(const Player &other)
 // free memory when a player is destroyed to prevent memory leaks
 Player::~Player()
 {
+    delete name;
     delete territories;
     delete handOfCards;
-    for (Order* order : *orders) {
-        delete order;
-    }
-    delete orders;
+    delete orderList;
+    delete cardsInHand;
 }
 
 // getters & setters
 std::string Player::getName() const
 {
-    return name;
+    return *name;
 }
 
 void Player::setName(const std::string &newName)
 {
-    name = newName;
+    *name = newName;
 }
 
 Hand* Player::getHandOfCards() const {
@@ -98,9 +103,8 @@ std::vector<Territory *> Player::getTerritories() const
     return *territories;
 }
 
-std::vector<Order *> Player::getOrders() const
-{
-    return *orders;
+OrdersList* Player::getOrdersList() const {
+    return orderList;
 }
 
 // function to add a territory to a player
@@ -136,7 +140,7 @@ void Player::removeTerritory(Territory *territory)
 void Player::addCards(Card* card) {
     if (card != nullptr) {
         handOfCards->addCard(*card);  
-        cardsInHand++;
+        (*cardsInHand)++; // Increment the number of cards
     } else {
         std::cout << "Invalid card!" << std::endl;
     }
@@ -175,8 +179,7 @@ std::vector<Territory *> Player::toAttack()
 void Player::issueOrder(Order* newOrder) {
     // check if order exists
     if (newOrder != nullptr) {
-        orders->push_back(newOrder);
-        // Output player name and order
+        orderList->issueOrder(newOrder);  
         std::cout << "Order issued by " << this->getName() << ": " << *newOrder << std::endl; 
     } else {
         std::cout << "Invalid order!" << std::endl;
@@ -184,11 +187,9 @@ void Player::issueOrder(Order* newOrder) {
 }
 
 // Stream insertion operator
-std::ostream &operator<<(std::ostream &os, const Player &player)
-{ // Overload for << operator
-    // output number of territories, cards and orders
-    os << player.name << " has " << player.territories->size() << " territories, "
-       << player.cardsInHand << " cards and "
-       << player.orders->size() << " orders.";
+std::ostream& operator<<(std::ostream& os, const Player& player) {
+    os << *(player.name) << " has " << player.territories->size() << " territories, "
+       << *(player.cardsInHand) << " cards and has issued the following orders:\n"
+       << *(player.orderList);
     return os;
 }

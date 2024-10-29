@@ -45,6 +45,10 @@ void testOrdersLists()
 //      return 0;
 // }
 
+ //int main() {
+   //  testOrdersLists();
+     //return 0;
+//}
 /*
 g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp Player.cpp Order.cpp Cards.cpp OrdersDriver.cpp
 */

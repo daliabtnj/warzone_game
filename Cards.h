@@ -61,16 +61,16 @@ public:
 class Deck
 {
 public:
-    Card deckOfCards[100]; // Array to hold the cards in the deck
+    Card* deckOfCards[100]; // Array to hold the cards in the deck
 public:
     // Default constructor that initializes the deck
     Deck();
     // Constructor that initializes the deck with an array of cards
-    Deck(Card deckOfCards[]);
+    Deck(Card* deckOfCards[]);
     // Copy constructor for creating a deck from another deck
     Deck(const Deck &other);
     // Destructor
-    ~Deck() {}
+    ~Deck();
 
     // Assignment operator overload
     Deck &operator=(const Deck &other);
@@ -79,10 +79,10 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Deck &deck);
 
     // Setter for the deck of cards
-    void setDeck(const Card deck[]);
+    void setDeck(Card* deck[]);
 
     // Getter for the deck of cards
-    const Card *getDeck() const;
+    Card* const* getDeck() const;
 
     // Method to draw a card from the deck and add it to a hand
     void draw(Hand &hand);
@@ -93,14 +93,14 @@ class Hand
 {
 
 private:
-    Card handOfCards[7]; // Array to hold the cards in the hand
+    Card* handOfCards[7]; // Array to hold the cards in the hand
     int cardCount;       // Counter to track the number of cards in hand
 
 public:
     // Default constructor that initializes the hand
     Hand();
     // Constructor that initializes the hand with an array of cards
-    Hand(Card handOfCards[]);
+    Hand(Card* handOfCards[]);
     // Copy constructor for creating a hand from another hand
     Hand(const Hand &other);
 
@@ -111,19 +111,19 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Hand &hand);
 
     // Destructor
-    ~Hand() {}
+    ~Hand();
 
     // Setter for the hand of cards
-    void setHand(const Card hand[]);
+    void setHand(Card* hand[]);
 
     // Getter for the hand of cards
-    const Card *getHand() const;
+    const Card* const* getHand() const;
 
     // Method to set a specific card at a given index
     void setCardAt(int index, const Card &card);
 
     // Method to get a card at a specific index
-    const Card &getCardAt(int index) const;
+    Card*& getCardAt(int index);
 
     // Getter for card count
     int getCardCount() const { return cardCount; }

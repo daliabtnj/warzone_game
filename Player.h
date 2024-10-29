@@ -13,24 +13,18 @@ class Territory;
 class Card;
 class Hand;
 class Order;
-class DeployOrder;
-class AdvanceOrder;
-class BombOrder;
-class BlockadeOrder; 
-class AirliftOrder;  
-class NegotiateOrder;
 class Deck;
 
 class Player{
 private:
     static int playerCount;
-    int cardsInHand;
-    std::string name;
+    int* cardsInHand;
+    std::string* name;
 
     // pointers to a vector of pointers to objects (Territory, Card, Order)
-    std::vector<Territory*>* territories; // collection of territories from pt1
+    std::vector<Territory*>* territories; // collection of territories from pt1    
     Hand* handOfCards; // colection of warzone cards
-    std::vector<Order*>* orders; // collection of orders
+    OrdersList* orderList; // collection of orders
 
 public:
     // constructors and deconstructors
@@ -45,7 +39,7 @@ public:
     Hand* getHandOfCards() const; // getter for player's hand
     void setName(const std::string& newName); // setter for name
     std::vector<Territory*> getTerritories() const;  // get the territories owned by the player
-    std::vector<Order*> getOrders() const;  // get the orders issued by the player
+    OrdersList* getOrdersList() const;  // get the orders issued by the player
 
     // methods to add and remove territory from a player
     void addTerritory(Territory* territory);
