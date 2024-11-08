@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <unordered_set>
 #include "Map.h"
 #include "Cards.h"
 #include "Order.h"
@@ -14,6 +15,7 @@ class Card;
 class Hand;
 class Order;
 class Deck;
+class OrdersList;
 
 class Player{
 private:
@@ -25,6 +27,9 @@ private:
     std::vector<Territory*>* territories; // collection of territories from pt1    
     Hand* handOfCards; // colection of warzone cards
     OrdersList* orderList; // collection of orders
+
+	std::unordered_set<Player*> diplomates;
+
 
 public:
     // constructors and deconstructors
@@ -57,6 +62,16 @@ public:
    
    // method to create & adds an order to the list
     void issueOrder(Order* newOrder); 
+
+    // neutral player for orders
+    static Player* neutralPlayer; // Pointer to the Neutral player
+    static Player* getNeutralPlayer(); // Static method to get or create the Neutral player
+
+    // Used for negociate;  target player and the player issuing the order 
+    // to not be able to successfully attack each others’ territories for the remainder of the turn.
+    void addDiplomacyPlayer(Player*);
+	bool isDiplomacyPlayer(Player*);
+	void clearDiplomacyPlayers();
 
     //stream insertion and operator overload
     //function defines how a Player's data is formatted/displayed when using the << operator with output streams

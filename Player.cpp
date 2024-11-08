@@ -8,6 +8,14 @@
 // initialize player count number to 0
 // playerCount belongs to Player class
 int Player::playerCount = 0;
+Player* Player::neutralPlayer = nullptr;
+
+Player* Player::getNeutralPlayer() {
+    if (neutralPlayer == nullptr) {
+        neutralPlayer = new Player("Neutral");
+    }
+    return neutralPlayer;
+}
 
 // default constructor
 Player::Player()
@@ -112,15 +120,35 @@ OrdersList* Player::getOrdersList() const {
 void Player::addTerritory(Territory *territory)
 {
     if (territory->getOwner() != nullptr)
-    { // check if it is owned by someone
-        std::cout << "Territory " << territory->getName() << " is already owned by another player." << std::endl;
+    {
+        // If the territory is already owned by someone else
+        if (territory->getOwner() == this)
+        {
+            std::cout << getName() << " already owns territory " << territory->getName() << "." << std::endl;
+        }
+        else
+        {
+            std::cout << "Territory " << territory->getName() << " is already owned by another player." << std::endl;
+        }
     }
     else
-    { // not owned
+    {
+        // Territory is not owned by anyone, so assign it to the player
         territory->setOwner(this);
-        territories->push_back(territory);
+        
+        // Check if the territory is already in the player's list before adding
+        if (std::find(territories->begin(), territories->end(), territory) == territories->end()) {
+            territories->push_back(territory);
+            std::cout << getName() << " now owns territory " << territory->getName() << "." << std::endl;
+        }
+        else
+        {
+            std::cout << getName() << " already own territory " << territory->getName() << " in your list." << std::endl;
+        }
     }
 }
+
+
 
 // function to remove a territory from the player
 // for when we conquer territories; we must first remove the territory of previous owner before adding to a new player
@@ -192,4 +220,18 @@ std::ostream& operator<<(std::ostream& os, const Player& player) {
        << *(player.cardsInHand) << " cards and has issued the following orders:\n"
        << *(player.orderList);
     return os;
+}
+
+// Diplomacy Player for negociate order
+void Player::addDiplomacyPlayer(Player* diplomate) {
+	diplomates.insert(diplomate);
+}
+
+bool Player::isDiplomacyPlayer(Player* diplomate) {
+	auto pair = diplomates.find(diplomate);
+	return pair != diplomates.end();
+}
+
+void Player::clearDiplomacyPlayers() {
+	diplomates.clear();
 }

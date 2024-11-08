@@ -30,6 +30,10 @@ public:
     // Adds an adjacent territory to the current territory
     void addAdjacentTerritory(Territory *t);
 
+    // getter for adjacent territories
+    std::vector<Territory*> getAdjacentTerritories() const { return *adjacentTerritories; }
+
+
     // Returns the list of adjacent territories
     std::vector<Territory *> getAdjacents() const;
 

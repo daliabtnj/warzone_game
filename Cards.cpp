@@ -85,32 +85,11 @@ Card::CardType Card::getType() const
 }
 
 // Method to play the card, affecting the player's hand and the deck
-void Card::play(Hand& hand, Deck& deck, Player& player) {
+void Card::play(Hand& hand, Deck& deck, Player& player, Order* order) {
+
     // Find the card in the player's hand
     for (int i = 0; i < 7; ++i) {
         if (*hand.getHand()[i] == *this) {
-            // Create and issue a specific order based on card type
-            Order* order = nullptr;
-            switch (this->type) {
-                case BOMB:
-                    order = new BombOrder();
-                    break;
-                case REINFORCEMENT:
-                    order = new DeployOrder();  // Assuming DeployOrder for reinforcements
-                    break;
-                case AIRLIFT:
-                    order = new AirliftOrder();
-                    break;
-                case BLOCKADE:
-                    order = new BlockadeOrder();
-                    break;
-                case DIPLOMACY:
-                    order = new NegotiateOrder();
-                    break;
-                default:
-                    std::cout << "Unknown card type!\n";
-                    return;
-            }
 
             // Issue the order to the player
             if (order != nullptr) {

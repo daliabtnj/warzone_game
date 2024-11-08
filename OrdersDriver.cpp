@@ -1,5 +1,140 @@
 #include "Order.h"
+#include "Player.h"
+#include "Map.h"
+#include "Cards.h"
+#include <iostream>
+#include <ctime>
 
+/*
+g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp Player.cpp Order.cpp Cards.cpp OrdersDriver.cpp
+*/
+
+// Test function to demonstrate the execution of various orders.
+void testOrderExecution() {
+    // Create territories
+    Continent* europe = new Continent("Europe", 0);
+
+    Territory* territory1 = new Territory("France", "Europe", 8);
+    Territory* territory2 = new Territory("Belgium", "Europe", 10);
+    Territory* territory3 = new Territory("Spain", "Europe", 6);
+    Territory* territory4 = new Territory("Portugal", "Europe", 8);
+    
+    // Create players
+    Player* player1 = new Player("Didou");
+    Player* player2 = new Player("Tash");
+    Player* neutralPlayer = new Player("Neutral");
+    
+    // Assign ownership of territories
+    player1->addTerritory(territory1);    
+    player1->addTerritory(territory2);    
+    player2->addTerritory(territory3);    
+    player2->addTerritory(territory4); 
+    player2->addTerritory(territory4);
+       
+    
+    // Set army counts
+    territory1->setArmies(5);
+    territory2->setArmies(3);
+    territory3->setArmies(4);
+    territory4->setArmies(2);
+    
+    // Set adjacent territories using addAdjacentTerritory
+    territory1->addAdjacentTerritory(territory2);
+    territory2->addAdjacentTerritory(territory1);
+    territory2->addAdjacentTerritory(territory3);
+    territory3->addAdjacentTerritory(territory2);
+    territory3->addAdjacentTerritory(territory4);
+    territory4->addAdjacentTerritory(territory3);
+
+     // Deploy Order - Valid
+    std::cout<<"\nVALID"<<std::endl;
+    std::cout << "Deploy Order (Player 1 deploys to France):\n";
+    DeployOrder deployOrder(player1, 3, territory1);
+    deployOrder.execute();  // Valid, adds armies to France
+
+    // Edge case - Deploy Order invalid (Player 2 does not own France)
+    std::cout<<"\nINVALID EDGE CASE"<<std::endl;
+    std::cout << "Deploy Order (Player 2 tries to deploy to France):\n";
+    DeployOrder deployOrderInvalid(player2, 3, territory1);
+    deployOrderInvalid.execute();  // Invalid, Player 2 does not own France
+
+    // Advance Order - Valid
+    std::cout<<"\nVALID"<<std::endl;
+    std::cout << "Advance Order (Player 1 attacks Player 2's Spain from France):\n";
+    AdvanceOrder advanceOrder(player1, 3, territory1, territory3);  // Advance from France to Spain (Player 1 attacks Player 2)
+    advanceOrder.execute();  // Should trigger battle and conquer if successful
+
+    // Edge case - Advance Order invalid (Player 1 tries to attack Player 2's Spain from Belgium, not adjacent)
+    std::cout<<"\nINVALID EDGE CASE"<<std::endl;
+    std::cout << "Advance Order (Player 1 tries to advance from Belgium to Spain):\n";
+    AdvanceOrder advanceOrderInvalid(player1, 3, territory2, territory3);  // Belgium to Spain (not adjacent)
+    advanceOrderInvalid.execute();  // Invalid, not adjacent
+
+    // Airlift Order - Valid
+    std::cout<<"\nVALID"<<std::endl;
+    std::cout << "Airlift Order (Player 1 airlifts to Portugal):\n";
+    AirliftOrder airliftOrder(player1, 2, territory1, territory4);  // Airlift from France to Portugal
+    airliftOrder.execute();  // Valid, moves troops from France to Portugal
+
+    // Edge case - Airlift Order invalid (Player 2 tries to airlift to Belgium)
+    std::cout<<"\nINVALID EDGE CASE"<<std::endl;
+    std::cout << "Airlift Order (Player 2 tries to airlift to Belgium):\n";
+    AirliftOrder airliftOrderInvalid(player2, 2, territory3, territory2);  // Airlift from Spain to Belgium (Player 2 owns Belgium)
+    airliftOrderInvalid.execute();  // Invalid, Player 2 does not own Belgium
+
+    // Bomb Order - Valid
+    std::cout<<"\nVALID"<<std::endl;
+    std::cout << "Bomb Order (Player 1 bombs Player 2's Spain):\n";
+    BombOrder bombOrder(player1, territory3);
+    bombOrder.execute();  // Valid, removes half of army units in Spain
+
+    // Edge case - Bomb Order invalid (Player 1 tries to bomb France, which they own)
+    std::cout<<"\nINVALID EDGE CASE"<<std::endl;
+    std::cout << "Bomb Order (Player 1 tries to bomb their own France):\n";
+    BombOrder bombOrderInvalid(player1, territory1);
+    bombOrderInvalid.execute();  // Invalid, can't bomb own territory
+
+    // Blockade Order - Valid
+    std::cout<<"\nVALID"<<std::endl;
+    std::cout << "Blockade Order (Player 1 blockades their own Belgium):\n";
+    BlockadeOrder blockadeOrder(player1, territory2);
+    blockadeOrder.execute();  // Valid, doubles army count in Belgium, transfers ownership to neutral
+
+    // Edge case - Blockade Order invalid (Player 2 tries to blockade Belgium, owned by Player 1)
+    std::cout<<"\nINVALID EDGE CASE"<<std::endl;
+    std::cout << "Blockade Order (Player 2 tries to blockade Belgium):\n";
+    BlockadeOrder blockadeOrderInvalid(player2, territory2);
+    blockadeOrderInvalid.execute();  // Invalid, Player 2 doesn't own Belgium
+
+    // Negotiate Order - Valid
+    std::cout<<"\nVALID"<<std::endl;
+    std::cout << "Negotiate Order (Player 1 negotiates with Player 2):\n";
+    NegotiateOrder negotiateOrder(player1, player2);
+    negotiateOrder.execute();  // Valid, no attack possible between player1 and player2
+
+    // Edge case - Negotiate Order invalid (Player 1 tries to negotiate with themselves)
+    std::cout<<"\nINVALID EDGE CASE"<<std::endl;
+    std::cout << "Negotiate Order (Player 1 tries to negotiate with themselves):\n";
+    NegotiateOrder negotiateOrderInvalid(player1, player1);
+    negotiateOrderInvalid.execute();  // Invalid, cannot negotiate with self
+    
+    
+    // Clean up dynamically allocated memory
+    delete territory1;
+    delete territory2;
+    delete territory3;
+    delete territory4;
+    delete player1;
+    delete player2;
+    delete neutralPlayer;
+}
+int main() {
+    // Call the test function
+    testOrderExecution();
+    return 0;
+}
+
+/*
 void testOrdersLists()
 {
     OrdersList ol;
@@ -39,16 +174,4 @@ void testOrdersLists()
     std::cout << "Orders List after executing all orders:" << std::endl;
     std::cout << ol << std::endl;
 }
-
-//  int main() {
-//      testOrdersLists();
-//      return 0;
-// }
-
- //int main() {
-   //  testOrdersLists();
-     //return 0;
-//}
-/*
-g++ -std=c++11 -o warzone Map.cpp MapLoader.cpp Player.cpp Order.cpp Cards.cpp OrdersDriver.cpp
 */

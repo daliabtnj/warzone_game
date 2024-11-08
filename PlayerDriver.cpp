@@ -57,6 +57,7 @@ void testPlayers() {
     std::cout << "\n*******************************************\n";
 
     // test issue order
+    /*
     std::cout << "\nTEST METHOD TO ISSUE ORDERS\n\n";
     player1.issueOrder(new DeployOrder());      // Issue a Deploy order
     player1.issueOrder(new AdvanceOrder());     // Issue an Advance order
@@ -64,6 +65,7 @@ void testPlayers() {
     player1.issueOrder(new BlockadeOrder());
     player1.issueOrder(new AirliftOrder());
     player1.issueOrder(new NegotiateOrder());
+    */
 
 
     std::cout << "\n*******************************************\n";

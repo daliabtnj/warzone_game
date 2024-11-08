@@ -11,6 +11,9 @@
 
 class Hand;
 class Deck;
+class Player;
+class Territory;
+class Order;
 
 class Card // Card class definition
 {
@@ -55,7 +58,7 @@ public:
     CardType getType() const;
 
     // Method to play the card, affecting the hand and deck
-    void play(Hand &hand, Deck &deck, Player &player);
+    void play(Hand &hand, Deck &deck, Player &player, Order* order);
 };
 // Deck class definition
 class Deck

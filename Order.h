@@ -4,91 +4,148 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Map.h"
+#include "Player.h"
 
-// Base class Order
+class Player;
+class Territory;
+class Continent;
+
+// PART5 CHECK COMMENTS IN CAPS
+
+// BASE CLASS ORDER
+// PART 5 UNCOMMENT TO CHANGE HOW CLASS NAME IS INSTEAD OF JUST class Order
+// class Order : public Subject, public ILoggable
 class Order
 {
 protected:
-    bool executed;      // Track if the order has been executed
+    bool validity;      // Track if the order has been executed
     std::string effect; // Store the effect after execution
+    std::string className;
 public:
     Order();
-    Order(const Order &other);                                             // Copy constructor
+    Order(const Order& other);                                             // Copy constructor
     virtual ~Order();                                                      // Destructor
-    virtual bool validate() = 0;                                           // Pure virtual method for validation
+    std::string getClassName();
+    bool getValidity();
+    virtual void validate() = 0;                                           // Pure virtual method for validation
     virtual void execute() = 0;                                            // Pure virtual method for execution
     virtual std::string getDescription() const = 0;                        // Pure virtual method for description
     friend std::ostream &operator<<(std::ostream &os, const Order &order); // Stream insertion operator
     virtual Order *clone() const = 0;                                      // Pure virtual method for cloning
+    Order& operator=(const Order& order);
+
+    // UNCOMMENT THIS FOR PART 5 !!
+    // std::string stringToLog() override;
 };
 
-// Derived classes for different types of orders
-class DeployOrder : public Order
-{
+// DEPLOY ORDER
+class DeployOrder : public Order {
+    Player* issuingPlayer;
+	int armies;
+	Territory* location;
 public:
-    DeployOrder();
+    DeployOrder(Player*, int, Territory*);
     DeployOrder(const DeployOrder &other);
-    bool validate() override;
+    DeployOrder& operator=(const DeployOrder& d);
+
+    void validate() override;
     void execute() override;
     std::string getDescription() const override;
     Order *clone() const override; // Clone method
+    virtual ~DeployOrder();
 };
 
-class AdvanceOrder : public Order
-{
+// ADVANCE ORDER
+class AdvanceOrder : public Order {
+	Player* issuingPlayer;
+	int armies;
+	bool attacking;
+	Territory* to;
+	Territory* from;
+
 public:
-    AdvanceOrder();
+    AdvanceOrder(Player*, int, Territory*, Territory*);
     AdvanceOrder(const AdvanceOrder &other);
-    bool validate() override;
+    AdvanceOrder& operator=(const AdvanceOrder& a);
+    void validate() override;
     void execute() override;
     std::string getDescription() const override;
     Order *clone() const override;
+    virtual ~AdvanceOrder();
+    bool isAdjacent(Territory* from, Territory* to);
+    bool isFriendly(Player* targetPlayer) const;
 };
 
+// BOMB ORDER
 class BombOrder : public Order
 {
+    Player* issuingPlayer;
+	Territory* location;
 public:
-    BombOrder();
-    BombOrder(const BombOrder &other);
-    bool validate() override;
+    BombOrder(Player*, Territory*);
+    BombOrder(const BombOrder& bomb);
+    BombOrder& operator=(const BombOrder bomb);
+    void validate() override;
     void execute() override;
     std::string getDescription() const override;
     Order *clone() const override;
+    virtual ~BombOrder();
 };
 
+// BLOCKADE ORDER
 class BlockadeOrder : public Order
 {
+    Player* issuingPlayer;
+	Territory* location;
 public:
-    BlockadeOrder();
+    BlockadeOrder(Player*, Territory*);
+    virtual ~BlockadeOrder();
     BlockadeOrder(const BlockadeOrder &other);
-    bool validate() override;
+    BlockadeOrder& operator=(const BlockadeOrder& b);
+    void validate() override;
     void execute() override;
     std::string getDescription() const override;
     Order *clone() const override;
 };
 
+// AIRLIFT ORDER
 class AirliftOrder : public Order
 {
+    Player* issuingPlayer;
+	int armies;
+	Territory* to;
+	Territory* from;
 public:
-    AirliftOrder();
+    AirliftOrder(Player*, int, Territory*, Territory*);
+    virtual ~AirliftOrder();
     AirliftOrder(const AirliftOrder &other);
-    bool validate() override;
+    AirliftOrder& operator=(const AirliftOrder& a);
+    void validate() override;
     void execute() override;
     std::string getDescription() const override;
     Order *clone() const override;
 };
 
+// NEGOCIATE ORDER
 class NegotiateOrder : public Order
 {
+    Player* issuingPlayer;
+	Player* targetPlayer;
 public:
-    NegotiateOrder();
+    NegotiateOrder(Player*, Player*);
     NegotiateOrder(const NegotiateOrder &other);
-    bool validate() override;
+    virtual ~NegotiateOrder();
+    NegotiateOrder& operator=(const NegotiateOrder& n);
+    void validate() override;
     void execute() override;
     std::string getDescription() const override;
     Order *clone() const override;
 };
 
+// ORDERLIST 
+// PART 5 UNCOMMENT THIS INSTEAD OF class ordersList
+// class OrdersList : public Subject, public ILoggable
 class OrdersList
 {
 private:
@@ -96,12 +153,14 @@ private:
 
 public:
     OrdersList();
-    OrdersList(const OrdersList &other);                                     // Copy constructor
+    OrdersList(const OrdersList& other);                                     // Copy constructor
     ~OrdersList();                                                           // Destructor
     void issueOrder(Order *order);                                           // Add order to the list
     void removeOrder(int index);                                             // Remove order from the list by index
     void moveOrder(int fromIndex, int toIndex);                              // Move order within the list
-    friend std::ostream &operator<<(std::ostream &os, const OrdersList &ol); // Stream insertion operator
+    friend std::ostream& operator<<(std::ostream& os, OrdersList& ordersList);  // Declare the friend function
+	OrdersList& operator=(const OrdersList& o);
+    const std::vector<Order*>& getOrders() const {return orders;}
 };
 
 #endif
