@@ -4,7 +4,7 @@
 //define unintialized constructors and 
 //make sure the state is start in the beginning
 CommandProcessor::CommandProcessor() {
-    currentState = new std::string("start"); // Allocate memory for currentState
+    currentState = new std::string("start"); 
 }
 CommandProcessor::~CommandProcessor() {
     //sicne we are dealing with pointers use delete and make suere all commands are deleted !
@@ -28,10 +28,31 @@ void CommandProcessor::readCommand(){
 
 //pass in a reference to avoid making a copy
 void CommandProcessor::saveCommand(const std::string& commandText){
+    //extract the commands: 
+
+    std::string cmd, arg;
+    //find index of the space that acts as a delimiter (so command <argument>)
+    size_t space = commandText.find(' ');
+    
+    if (space != std::string::npos){
+        //store whats before the command in cmd
+        cmd = commandText.substr(0, space);
+        arg = commandText.substr(space+1);
+    }else{
+        //if no argument is provided then 
+        cmd = commandText;
+    }
+
+
     //Check first if the command is valid in that state:
-    bool isValid = validate(commandText);
+    bool isValid = validate(cmd, arg);
      //create that command as the object it should be 
-    Command* newCommand = new Command(commandText);
+    Command* newCommand = new Command(cmd);
+
+    //check if the cmd is loadmap or addplayer to add the argument 
+        if ((cmd == "loadmap" || cmd == "addplayer") && !arg.empty()) {
+        newCommand->setArgument(arg);
+    }
     //display message if is valid or not
     std::string effect = isValid ? "Command accepted: State transitioned to " + *currentState
                                  : "Invalid command for the current state: " + *currentState;
@@ -49,12 +70,16 @@ void CommandProcessor::saveCommand(const std::string& commandText){
 
 Command::Command(std::string commandText) {
     this->commandText = new std::string(commandText);
-    this->effect = new std::string();  
+    this->effect = new std::string();
+    //just make the argument nullptr for now
+    this->argument = nullptr;  
 }
 
 Command::~Command() {
     delete commandText;
     delete effect;
+    //avoid memory leak and delete only if argument exists
+    if (argument) delete argument;
 }
 
 //getCommand() implementatiuon 
@@ -78,21 +103,76 @@ void Command::saveEffect(const std::string& effect){
     }
 }
 
-bool CommandProcessor::validate(const std::string& commandText) {
-    if (*currentState == "start" && commandText == "loadmap") {
-        *currentState = "maploaded";
-        return true;
-    } else if (*currentState == "maploaded" && commandText == "validatemap") {
-        *currentState = "mapvalidated";
-        return true;
-    } else if (*currentState == "mapvalidated" && commandText.substr(0, 9) == "addplayer") {
-        *currentState = "playersadded";
-        return true;
-    } else if (*currentState == "playersadded" && commandText == "gamestart") {
-        *currentState = "assignreinforcement";
-        return true;
+//setter for setting arguments
+void Command::setArgument(const std::string& arg) {
+    if (!argument) {
+        argument = new std::string(arg);
+    } else {
+        *argument = arg;
     }
+}
+
+// bool CommandProcessor::validate(const std::string& commandText) {
+//     if (*currentState == "start" && commandText == "loadmap") {
+//         *currentState = "maploaded";
+//         return true;
+//     } else if (*currentState == "maploaded" && commandText == "validatemap") {
+//         *currentState = "mapvalidated";
+//         return true;
+//     } else if (*currentState == "mapvalidated" && commandText.substr(0, 9) == "addplayer") {
+//         *currentState = "playersadded";
+//         return true;
+//     } else if (*currentState == "playersadded" && commandText == "gamestart") {
+//         *currentState = "assignreinforcement";
+//         return true;
+//     }
+//     return false;
+// }
+
+bool CommandProcessor::validate(const std::string& commandText, const std::string& argument) {
+    // for loadmap that takes an argument
+    if (commandText == "loadmap") {
+        if (*currentState == "start" && !argument.empty()) {
+            *currentState = "maploaded";
+            return true;
+        }
+        //same for addplayer
+    } else if (commandText == "addplayer") {
+        if (*currentState == "mapvalidated" && !argument.empty()) {
+            *currentState = "playersadded";
+            return true;
+        }
+    }
+    // now that commands that have no arguments
+    else if (commandText == "validatemap") {
+        if (*currentState == "maploaded" && argument.empty()) {
+            *currentState = "mapvalidated";
+            return true;
+        }
+    } else if (commandText == "gamestart") {
+        if (*currentState == "playersadded" && argument.empty()) {
+            *currentState = "assignreinforcement";
+            return true;
+        }
+    }
+   //if command is not recognized then it is not valid
     return false;
+}
+
+//printing the commands just for validation purposes:
+void CommandProcessor::printCommands() const {
+    if (commands.empty()) {
+        std::cout << "No commands have been added yet." << std::endl;
+        return;
+    }
+
+    std::cout << "\n--- List of Stored Commands ---" << std::endl;
+    for (const Command* cmd : commands) {
+        std::cout << "Command: " << cmd->getCommandText()
+                  << ", Argument: " << (cmd->getArgument().empty() ? "None" : cmd->getArgument())
+                  << ", Effect: " << cmd->getEffect() << std::endl;
+    }
+    std::cout << "------------------------------" << std::endl;
 }
 
 
