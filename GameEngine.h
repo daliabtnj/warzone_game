@@ -4,9 +4,11 @@
 #include <string>
 #include <iostream>
 
-class GameEngine {
+class GameEngine
+{
 public:
-    enum State {
+    enum State
+    {
         STARTUP,
         MAP_LOADED,
         MAP_VALIDATED,
@@ -18,8 +20,9 @@ public:
     };
 
     GameEngine();
-    void transition(const std::string& command);
+    void transition(const std::string &command);
     void printState() const;
+    void startupPhase();
 
 private:
     State currentState;

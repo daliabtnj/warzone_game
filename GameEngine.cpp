@@ -1,73 +1,134 @@
 #include "GameEngine.h"
+#include "CommandProcessing.h"
+#include "Map.h"
 
 GameEngine::GameEngine() : currentState(STARTUP) {}
 
-void GameEngine::transition(const std::string& command) {
-    if ((currentState == STARTUP && command == "loadmap") || (currentState == MAP_LOADED && command == "loadmap")) {
+void GameEngine::transition(const std::string &command)
+{
+    if ((currentState == STARTUP && command == "loadmap") || (currentState == MAP_LOADED && command == "loadmap"))
+    {
         loadMap();
         currentState = MAP_LOADED;
-    } else if (currentState == MAP_LOADED && command == "validatemap") {
+    }
+    else if (currentState == MAP_LOADED && command == "validatemap")
+    {
         validateMap();
         currentState = MAP_VALIDATED;
-    } else if ((currentState == MAP_VALIDATED && command == "addplayer") || (currentState == PLAYERS_ADDED && command == "addplayer")) {
+    }
+    else if ((currentState == MAP_VALIDATED && command == "addplayer") || (currentState == PLAYERS_ADDED && command == "addplayer"))
+    {
         addPlayer();
         currentState = PLAYERS_ADDED;
-    } else if (currentState == PLAYERS_ADDED && command == "assigncountries") {
+    }
+    else if (currentState == PLAYERS_ADDED && command == "assigncountries")
+    {
         assignCountries();
         currentState = ASSIGN_REINFORCEMENTS;
-    } else if ((currentState == ASSIGN_REINFORCEMENTS && command == "issueorder") || (currentState == ISSUE_ORDERS && command == "issueorder")) {
+    }
+    else if ((currentState == ASSIGN_REINFORCEMENTS && command == "issueorder") || (currentState == ISSUE_ORDERS && command == "issueorder"))
+    {
         issueOrder();
         currentState = ISSUE_ORDERS;
-    } else if ((currentState == ISSUE_ORDERS && command == "executeorder") || (currentState == EXECUTE_ORDERS && command == "executeorder")) {
+    }
+    else if ((currentState == ISSUE_ORDERS && command == "executeorder") || (currentState == EXECUTE_ORDERS && command == "executeorder"))
+    {
         executeOrder();
         currentState = EXECUTE_ORDERS;
-    } else if (currentState == EXECUTE_ORDERS && command == "win") {
+    }
+    else if (currentState == EXECUTE_ORDERS && command == "win")
+    {
         winGame();
         currentState = WIN;
-    } else {
+    }
+    else
+    {
         std::cout << "Invalid command for current state." << std::endl;
     }
 }
 
-void GameEngine::printState() const {
+void GameEngine::printState() const
+{
     std::cout << "Current state: ";
-    switch (currentState) {
-        case STARTUP: std::cout << "STARTUP"; break;
-        case MAP_LOADED: std::cout << "MAP LOADED"; break;
-        case MAP_VALIDATED: std::cout << "MAP VALIDATED"; break;
-        case PLAYERS_ADDED: std::cout << "PLAYERS ADDED"; break;
-        case ASSIGN_REINFORCEMENTS: std::cout << "ASSIGN REINFORCEMENTS"; break;
-        case ISSUE_ORDERS: std::cout << "ISSUE ORDERS"; break;
-        case EXECUTE_ORDERS: std::cout << "EXECUTE ORDERS"; break;
-        case WIN: std::cout << "WIN"; break;
+    switch (currentState)
+    {
+    case STARTUP:
+        std::cout << "STARTUP";
+        break;
+    case MAP_LOADED:
+        std::cout << "MAP LOADED";
+        break;
+    case MAP_VALIDATED:
+        std::cout << "MAP VALIDATED";
+        break;
+    case PLAYERS_ADDED:
+        std::cout << "PLAYERS ADDED";
+        break;
+    case ASSIGN_REINFORCEMENTS:
+        std::cout << "ASSIGN REINFORCEMENTS";
+        break;
+    case ISSUE_ORDERS:
+        std::cout << "ISSUE ORDERS";
+        break;
+    case EXECUTE_ORDERS:
+        std::cout << "EXECUTE ORDERS";
+        break;
+    case WIN:
+        std::cout << "WIN";
+        break;
     }
     std::cout << std::endl;
 }
 
-void GameEngine::loadMap() {
+void GameEngine::loadMap()
+{
     std::cout << "Loading map..." << std::endl;
 }
 
-void GameEngine::validateMap() {
+void GameEngine::validateMap()
+{
     std::cout << "Validating map..." << std::endl;
 }
 
-void GameEngine::addPlayer() {
+void GameEngine::addPlayer()
+{
     std::cout << "Adding players..." << std::endl;
 }
 
-void GameEngine::assignCountries() {
+void GameEngine::assignCountries()
+{
     std::cout << "Assigning countries..." << std::endl;
 }
 
-void GameEngine::issueOrder() {
+void GameEngine::issueOrder()
+{
     std::cout << "Issuing order..." << std::endl;
 }
 
-void GameEngine::executeOrder() {
+void GameEngine::executeOrder()
+{
     std::cout << "Executing order..." << std::endl;
 }
 
-void GameEngine::winGame() {
+void GameEngine::winGame()
+{
     std::cout << "Winning the game..." << std::endl;
+}
+
+void GameEngine::startupPhase()
+{
+    CommandProcessor *processor = new CommandProcessor();
+    std::string commandText;
+    do
+    {
+        getline(std::cin, commandText);
+        if (commandText == "exit")
+            break;
+        processor->saveCommand(commandText);
+        Command *command = processor->getCommand();
+        std::cout << "Processed Command: " << command->getCommandText() << std::endl;
+        std::cout << "Command Effect: " << command->getEffect() << std::endl;
+        std::cout << "Enter next command (or type 'exit' to finish): ";
+    } while (true);
+    delete processor;
 }

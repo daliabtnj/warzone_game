@@ -3,7 +3,8 @@
 #include <iostream>
 #include <string>
 
-void testGameStates() {
+void testGameStates()
+{
     GameEngine gameEngine;
     std::string command;
 
@@ -18,16 +19,33 @@ void testGameStates() {
     std::cout << "7. win\n";
     std::cout << "Type 'exit' to quit.\n\n";
 
-    while (true) {
+    while (true)
+    {
         gameEngine.printState();
         std::cout << "Enter command: ";
         std::cin >> command;
-        if (command == "exit") break;
+        if (command == "exit")
+            break;
         gameEngine.transition(command);
     }
 }
 
-// int main() {
-//     testGameStates();
-//     return 0;
-// }
+void testStartupPhase()
+{
+    GameEngine gameEngine;
+    std::cout << "Starting game setup phase. Use commands to proceed:\n";
+    std::cout << "Commands:\n";
+    std::cout << " - loadmap <filename>\n";
+    std::cout << " - validatemap\n";
+    std::cout << " - addplayer <playername>\n";
+    std::cout << " - gamestart\n";
+    gameEngine.startupPhase();
+}
+
+// g++ -std=c++11 -o warzone GameEngine.cpp GameEngineDriver.cpp Map.cpp Maploader.cpp CommandProcessing.cpp Player.cpp Order.cpp Cards.cpp
+int main()
+{
+    // testGameStates();
+    testStartupPhase();
+    return 0;
+}

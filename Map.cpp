@@ -196,6 +196,11 @@ bool Map::validate()
     return isConnected() && areContinentsConnected();
 }
 
+const std::vector<Territory *> &Map::getTerritories() const
+{
+    return *territories;
+}
+
 bool Map::isConnected()
 {
     if (territories->empty())

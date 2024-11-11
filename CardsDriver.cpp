@@ -14,7 +14,7 @@ void testCards()
         Card::BOMB, Card::REINFORCEMENT, Card::AIRLIFT, Card::BLOCKADE, Card::DIPLOMACY};
 
     // Initialize an array to hold all the card objects created above, used for the Deck object
-    Card* allCards[40];
+    Card *allCards[40];
 
     // Use a loop to fill the allCards array by cycling through the card types
     for (int i = 0; i < 40; ++i)
@@ -44,12 +44,12 @@ void testCards()
     std::cout << testHand;
     std::cout << testDeck;
 
-    Card* temp; // Temporary card object for holding drawn cards
+    Card *temp; // Temporary card object for holding drawn cards
 
     // Play each of the drawn cards from the hand
     for (int i = 0; i < 5; i++)
     {
-        temp = testHand.getCardAt(i);              // Get the card at index i
+        temp = testHand.getCardAt(i);               // Get the card at index i
         temp->play(testHand, testDeck, testPlayer); // Play the card, affecting both the hand and the deck
     }
 

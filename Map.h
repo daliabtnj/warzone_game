@@ -31,8 +31,7 @@ public:
     void addAdjacentTerritory(Territory *t);
 
     // getter for adjacent territories
-    std::vector<Territory*> getAdjacentTerritories() const { return *adjacentTerritories; }
-
+    std::vector<Territory *> getAdjacentTerritories() const { return *adjacentTerritories; }
 
     // Returns the list of adjacent territories
     std::vector<Territory *> getAdjacents() const;
@@ -85,6 +84,9 @@ public:
     void addTerritory(Territory *t); // Adds territory to map
     void addContinent(Continent *c); // Adds continent to map
     bool validate();                 // Validates map
+
+    // Method to return a reference to the list of territories
+    const std::vector<Territory *> &getTerritories() const;
 
     friend std::ostream &operator<<(std::ostream &os, const Map &m); // Operator overload to print map
 

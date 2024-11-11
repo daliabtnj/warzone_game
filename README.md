@@ -134,7 +134,7 @@ This will generate a warzone executable file.
 
 1. From terminal, go to the project root directory and type cmd:
 
-`g++ -std=c++11 -o warzone GameEngine.cpp GameEngineDriver.cpp`
+`g++ -std=c++11 -o warzone GameEngine.cpp GameEngineDriver.cpp Map.cpp Maploader.cpp CommandProcessing.cpp Player.cpp Order.cpp Cards.cpp`
 
 This will generate a warzone executable file.
 
