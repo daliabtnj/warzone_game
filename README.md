@@ -22,7 +22,7 @@ Team members:
 1. Make sure to comment out the main functions of all other Driver files.
 2. From terminal, go to the project root directory and type cmd:
 
-`g++ -std=c++11 -o warzone MainDriver.cpp Map.cpp MapLoader.cpp MapDriver.cpp Player.cpp PlayerDriver.cpp Order.cpp OrdersDriver.cpp Cards.cpp CardsDriver.cpp GameEngine.cpp GameEngineDriver.cpp`
+`g++ -std=c++11 -o warzone MainDriver.cpp Map.cpp MapLoader.cpp MapDriver.cpp Player.cpp PlayerDriver.cpp Order.cpp OrdersDriver.cpp Cards.cpp CardsDriver.cpp GameEngine.cpp GameEngineDriver.cpp CommandProcessing.cpp `
 
 This will generate a warzone executable file.
 

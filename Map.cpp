@@ -17,20 +17,37 @@ Territory::Territory(const Territory &other)
 {
     this->name = new std::string(*other.name);
     this->continentName = new std::string(*other.continentName);
-    this->adjacentTerritories = new std::vector<Territory *>(*other.adjacentTerritories);
+    adjacentTerritories = new std::vector<Territory*>();
+    for (auto* territory : *other.adjacentTerritories) {
+        adjacentTerritories->push_back(new Territory(*territory));  // Create a new Territory for each
+    }    
     this->owner = other.owner;             // Shallow copy of owner (assuming Player is managed elsewhere)
     this->armies = new int(*other.armies); // Copy the number of armies
 }
 
-Territory &Territory::operator=(const Territory &other)
+Territory& Territory::operator=(const Territory& other)
 {
-    if (this != &other)
-    {
-        *this->name = *other.name;
-        *this->continentName = *other.continentName;
-        *this->adjacentTerritories = *other.adjacentTerritories;
-        this->owner = other.owner;     // Shallow copy of owner
-        *this->armies = *other.armies; // Copy the number of armies
+    if (this != &other) {  // Self-assignment check
+
+        // Clean up existing resources
+        delete name;
+        delete continentName;
+        delete armies;
+        for (auto* territory : *adjacentTerritories) {
+            delete territory;
+        }
+        delete adjacentTerritories;
+
+        // Perform deep copy
+        name = new std::string(*(other.name));
+        continentName = new std::string(*(other.continentName));
+        armies = new int(*(other.armies));
+        owner = other.owner;
+
+        adjacentTerritories = new std::vector<Territory*>();
+        for (auto* territory : *other.adjacentTerritories) {
+            adjacentTerritories->push_back(new Territory(*territory));
+        }
     }
     return *this;
 }
@@ -55,10 +72,8 @@ std::string Territory::getContinentName() const
     return *this->continentName;
 }
 
-// Getter and setter for player ownership
-void Territory::setOwner(Player *p)
-{
-    this->owner = p;
+void Territory::setOwner(Player* newOwner) {
+this->owner = newOwner;
 }
 
 Player *Territory::getOwner() const

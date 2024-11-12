@@ -48,7 +48,10 @@ Player::Player(const std::string &playerName)
 Player::Player(const Player &other)
 {
     name = new std::string(*(other.name));  
-    territories = new std::vector<Territory *>(*(other.territories));
+    territories = new std::vector<Territory*>();
+    for (auto* territory : *other.territories) {
+        territories->push_back(new Territory(*territory));  // Create a new Territory for each
+    }    
     handOfCards = new Hand(*(other.handOfCards));
 	orderList = new OrdersList(*(other.orderList));
     cardsInHand = new int(*(other.cardsInHand));  
@@ -63,6 +66,9 @@ Player &Player::operator=(const Player &other)
         // Free memory of the current object's attributes to avoid memory leaks
         delete name;
         delete territories;
+        for (auto* territory : *territories) {
+            delete territory;
+        }
         delete handOfCards;
         delete orderList;
         delete cardsInHand;
@@ -71,8 +77,10 @@ Player &Player::operator=(const Player &other)
         name = new std::string(*(other.name));
 
         // Create new copies of the territories, handOfCards, and orders lists
-        territories = new std::vector<Territory *>(*(other.territories));
-        handOfCards = new Hand(*(other.handOfCards));
+        territories = new std::vector<Territory*>();
+        for (auto* territory : *other.territories) {
+            territories->push_back(new Territory(*territory));
+        }        handOfCards = new Hand(*(other.handOfCards));
 	    orderList = new OrdersList(*(other.orderList));
         cardsInHand = new int(*(other.cardsInHand));
 
@@ -116,39 +124,33 @@ OrdersList* Player::getOrdersList() const {
 }
 
 // function to add a territory to a player
-// makes sure that no one has the territory so that it is only owned by one person
-void Player::addTerritory(Territory *territory)
+void Player::addTerritory(Territory* territory)
 {
-    if (territory->getOwner() != nullptr)
+    // Check if the territory is already owned by another player
+    if (territory->getOwner() != nullptr && territory->getOwner() != this)
     {
-        // If the territory is already owned by someone else
-        if (territory->getOwner() == this)
-        {
-            std::cout << getName() << " already owns territory " << territory->getName() << "." << std::endl;
-        }
-        else
-        {
-            std::cout << "Territory " << territory->getName() << " is already owned by another player." << std::endl;
-        }
+        std::cout << "Territory " << territory->getName() 
+                  << " is already owned by another player." << std::endl;
+        return;
+    }
+
+    // Set this player as the owner if it's not already owned
+    if (territory->getOwner() == nullptr)
+    {
+        territory->setOwner(this);
+    }
+
+    // Check if the territory is already in the player's list to avoid duplicates
+    if (std::find(territories->begin(), territories->end(), territory) == territories->end())
+    {
+        territories->push_back(territory);
+        std::cout << getName() << " now owns territory " << territory->getName() << "." << std::endl;
     }
     else
     {
-        // Territory is not owned by anyone, so assign it to the player
-        territory->setOwner(this);
-        
-        // Check if the territory is already in the player's list before adding
-        if (std::find(territories->begin(), territories->end(), territory) == territories->end()) {
-            territories->push_back(territory);
-            std::cout << getName() << " now owns territory " << territory->getName() << "." << std::endl;
-        }
-        else
-        {
-            std::cout << getName() << " already own territory " << territory->getName() << " in your list." << std::endl;
-        }
+        std::cout << getName() << " already owns territory " << territory->getName() << "." << std::endl;
     }
 }
-
-
 
 // function to remove a territory from the player
 // for when we conquer territories; we must first remove the territory of previous owner before adding to a new player

@@ -43,9 +43,11 @@ void testStartupPhase()
 }
 
 // g++ -std=c++11 -o warzone GameEngine.cpp GameEngineDriver.cpp Map.cpp Maploader.cpp CommandProcessing.cpp Player.cpp Order.cpp Cards.cpp
+/*
 int main()
 {
     // testGameStates();
     testStartupPhase();
     return 0;
 }
+*/

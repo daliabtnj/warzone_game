@@ -50,7 +50,7 @@ void testCards()
     for (int i = 0; i < 5; i++)
     {
         temp = testHand.getCardAt(i);               // Get the card at index i
-        temp->play(testHand, testDeck, testPlayer); // Play the card, affecting both the hand and the deck
+        // temp->play(testHand, testDeck, testPlayer, ); // Play the card, affecting both the hand and the deck
     }
 
     // Output the final state of the hand and the deck after playing the cards
