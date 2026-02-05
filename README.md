@@ -14,6 +14,7 @@ Team members:
 | Aymane Arfaoui      | 40248780   | Aymane-Arfaoui |
 | Mathew Sakellarakos | 40248474   | ms8074         |
 | Alexander El Ghaoui | 40200062   | Ghawi25        |
+
 Problem statement
 The specific project for this semester consists in building a simple “Risk” computer game. The developed program will have to be compatible with the rules and map files and the command-line play of the “Warzone” version of Risk, which can be found at: https://www.warzone.com/. A Warzone game setup consists of a connected graph map representing a world map, where each node is a country and each edge represents adjacency between countries. Two or more players can play by placing armies on countries they own, from which they can attack adjacent countries to conquer them. The objective of the game is to conquer all countries on the map.
 
