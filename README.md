@@ -23,7 +23,7 @@ Team members:
 * Note that the following descriptions describe the baseline of the assignment, and are related to the project description.
 * See the course web page for a full description of the team project, as well as links to the details of the game rules to be implemented.
 ---
-#### Assignment 1: 
+
 * Specific design requirements
   1. All data members of user-defined class type must be of **pointer type**.
   2. All file names and the content of the files must be according to what is given in the description below.
@@ -143,25 +143,4 @@ transition diagram presented below. Any command that does not correspond to an o
     - Incorrect commands result in an error message displayed on the console and do not result in a state transition. 
     - Driver that creates a console-driven interface that allows the user to navigate through all the states by typing commands as stated in the above graph.
   ---
-#### Assignment 2: 
----
-#### Assignment 3: 
-* Specific design requirements
-  1. All data members of user-defined class type must be of **pointer type**.
-  2. All file names and the content of the files must be according to what is given in the description below.
-  3. All different parts must be implemented in their own separate .cpp/.h file duo. All functions’ implementation must be provided in the .cpp file 
-    (i.e. no inline functions are allowed).
-  4. All classes must implement a correct copy constructor, assignment operator, and stream insertion operator.
-  5. **Memory leaks must be avoided**.
-  6. Code must be documented using comments (user-defined classes, methods, free functions, operators).
-  7. If you use third-party libraries that are not available in the labs and require setup/installation, you may not assume to have help using them and you are entirely responsible for their proper installation for grading purposes.
-  8. All the code developed in assignment 3 must stay in the same files as specified in assignment 1 and 2: 
-    * Map loading and in-game map implementation: Map.cpp/Map.h
-    * Command processing: CommandProcessing.cpp/CommandProcessing.h
-    * Player implementation: Player.cpp/Player.h
-    * Card hand and deck implementation: Cards.cpp/Cards.h
-    * Orders implementation: Orders.cpp/Orders.h
-    * Game controller implementation: GameEngine.cpp/GameEngine.h
-    * Game logging: LoggingObserver.cpp/LoggingObserver.h
----
 
