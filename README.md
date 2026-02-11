@@ -1,19 +1,19 @@
-# 345-warzone
+# warzone
 
-Implementation of the Warzone game for COMP345, Fall 2024 semester @Concordia.
+Implementation of the Warzone game
 
 Team: endgame.exe
 
 Team members:
 
-| Full Name           | Student ID | Github Handle  |
-| ------------------- | ---------- | -------------- |
-| Ralph Elhage        | 40131981   | CloudedByLight |
-| Dalia Betinjaneh    | 40200966   | daliabtnj      |
-| Ayman Bohsali       | 40231988   | AymBohs        |
-| Aymane Arfaoui      | 40248780   | Aymane-Arfaoui |
-| Mathew Sakellarakos | 40248474   | ms8074         |
-| Alexander El Ghaoui | 40200062   | Ghawi25        |
+| Full Name           | Github Handle  |
+| ------------------- | -------------- |
+| Ralph Elhage        | CloudedByLight |
+| Dalia Betinjaneh    | daliabtnj      |
+| Ayman Bohsali       | AymBohs        |
+| Aymane Arfaoui      | Aymane-Arfaoui |
+| Mathew Sakellarakos | ms8074         |
+| Alexander El Ghaoui | Ghawi25        |
 
 # Risk/Warzone Game
 This game was developed in Winter 2022 for the "COMP 345: Advanced program design with C++" class at Concordia University as a semester-long project.
